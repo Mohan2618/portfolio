@@ -49,8 +49,8 @@ function payloadFor(draft, table) {
 function Field({ name, value, onChange }) {
   const labels = { start_date: 'START DATE', end_date: 'END DATE', display_order: 'DISPLAY ORDER', github_url: 'GITHUB URL', live_url: 'LIVE URL', credential_url: 'CREDENTIAL URL' };
   const label = labels[name] || name.replaceAll('_', ' ').toUpperCase();
-  if (name === 'description') return <label className="full-field">{label}<textarea rows="5" value={value} onChange={e => onChange(e.target.value)} /></label>;
-  if (name === 'technologies') return <label className="full-field">{label}<input value={value} onChange={e => onChange(e.target.value)} placeholder="Java, React, SQL" /></label>;
+  if (name === 'about') return <label className="full-field">ABOUT / BIO<textarea rows="8" value={value} onChange={e => onChange(e.target.value)} /></label>;
+  if (name === 'description') return <label className="full-field">{label}<textarea rows="5" value={value} className="full-field">{label}<input value={value} onChange={e => onChange(e.target.value)} placeholder="Java, React, SQL" /></label>;
   if (name === 'featured') return <label className="project-featured-toggle"><input type="checkbox" checked={Boolean(value)} onChange={e => onChange(e.target.checked)} /> FEATURED PROJECT</label>;
   const type = ['start_date', 'end_date', 'issue_date'].includes(name) ? 'date' : ['level', 'display_order'].includes(name) ? 'number' : 'text';
   return <label>{label}<input type={type} value={value} onChange={e => onChange(e.target.value)} /></label>;
