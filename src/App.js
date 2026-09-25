@@ -64,6 +64,10 @@ function Projects({ projects }) {
   return <section className="section" id="PROJECTS"><div className="section-heading"><span className="eyebrow">03 / PROJECTS</span><h2>Things I've <span>built.</span></h2></div><div className="projects-grid">{projects.map((project, index) => <TiltCard key={project.id || project.title} className="project-card"><div className="project-number">0{index + 1}</div><span className="project-type">{project.type || projectType(project.title)}</span><h3>{project.title}</h3><p>{project.description}</p><div className="tags">{(project.tech || []).map(item => <span key={item}>{item}</span>)}</div><div className="project-arrow">↗</div></TiltCard>)}</div></section>;
 }
 
+function Experience({ experience }) {
+  return <section className="section" id="EXPERIENCE"><div className="section-heading"><span className="eyebrow">04 / EXPERIENCE</span><h2>Where I've <span>worked.</span></h2></div><div className="experience-grid">{experience.map((item,index)=><TiltCard key={item.id||index} className="experience-card"><div className="experience-top"><div><div className="experience-company">{item.company}</div><h3 className="experience-role">{item.role}</h3></div><span className="experience-date">{item.startDate||'—'} → {item.endDate||'PRESENT'}</span></div><div className="experience-location">{item.location}</div><p className="experience-description">{item.description}</p><div className="tags">{item.technologies.map(tech=><span key={tech}>{tech}</span>)}</div></TiltCard>)}</div></section>;
+}
+
 function Resume({ portfolio }) {
   return <section className="section resume-section" id="RESUME"><div className="resume-card"><span className="eyebrow">04 / RESUME</span><h2>Ready to <span>connect?</span></h2><p>View the latest resume and learn more about my technical experience.</p><a className="button-3d primary" href={portfolio.profile.resumeUrl || "/portfolio/Resume-AIML.pdf"} target="_blank" rel="noreferrer">View Resume ↗</a></div></section>;
 }
@@ -123,7 +127,7 @@ function PublicPortfolio() {
   if (loading) return <div className="app"><main className="main-content"><section className="section hero"><div className="hero-grid" /><div className="hero-copy"><span className="eyebrow">LOADING PORTFOLIO</span><h1>MOHAN<span>.</span></h1><p>Loading portfolio data from Supabase...</p></div></section></main></div>;
   if (error) return <div className="app"><main className="main-content"><section className="section hero"><div className="hero-copy"><span className="eyebrow">DATABASE ERROR</span><h1>PORTFOLIO<span>.</span></h1><p>{error}</p><button className="button-3d primary" onClick={() => window.location.reload()}>Retry</button></div></section></main></div>;
 
-  return <div className="app"><Navbar active={active} setActive={goTo} /><main className="main-content"><Hero portfolio={portfolio} setActive={goTo} /><About portfolio={portfolio} /><Skills skills={portfolio.skills} /><Projects projects={portfolio.projects} /><Resume portfolio={portfolio} /><Contact portfolio={portfolio} /><footer>{portfolio.profile.name.toUpperCase()} <span>•</span> {portfolio.settings.footerText}</footer></main></div>;
+  return <div className="app"><Navbar active={active} setActive={goTo} /><main className="main-content"><Hero portfolio={portfolio} setActive={goTo} /><About portfolio={portfolio} /><Skills skills={portfolio.skills} /><Projects projects={portfolio.projects} /><Experience experience={portfolio.experience} /><Resume portfolio={portfolio} /><Contact portfolio={portfolio} /><footer>{portfolio.profile.name.toUpperCase()} <span>•</span> {portfolio.settings.footerText}</footer></main></div>;
 }
 
 export default function App() {
