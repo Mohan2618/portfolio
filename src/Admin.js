@@ -495,8 +495,7 @@ function Admin() {
   const [user, setUser] = useState(null);
   const [authorized, setAuthorized] = useState(false);
   const [error, setError] = useState('');
-  const initialSection = new URLSearchParams(window.location.search).get('section');
-  const [selected, setSelected] = useState(sections.some(([title]) => title === initialSection) ? initialSection : 'PROFILE');
+  const [selected, setSelected] = useState('PROFILE');
 
   useEffect(() => {
     let mounted = true;
