@@ -501,7 +501,7 @@ export default function Admin() {
           </nav>
         </aside>
         <section className="admin-editor-area">
-          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : selected === 'SKILLS' ? <SkillsEditor /> : selected === 'PROJECTS' ? <ProjectsEditor /> : selected === 'EXPERIENCE' ? <ExperienceEditor /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
+          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : selected === 'SKILLS' ? <SkillsEditor /> : selected === 'PROJECTS' ? <ProjectsEditor /> : selected === 'EXPERIENCE' ? <ExperienceEditor /> : selected === 'EDUCATION' ? <EducationEditor /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
         </section>
       </main>
     </div>
