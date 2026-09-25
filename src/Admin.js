@@ -206,6 +206,162 @@ function SkillsEditor() {
   );
 }
 
+
+function ProjectsEditor() {
+  const emptyProject = { title: '', description: '', image_url: '', github_url: '', live_url: '', technologies: '', featured: false, display_order: 0 };
+  const [projects, setProjects] = useState([]);
+  const [draft, setDraft] = useState(emptyProject);
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  const loadProjects = async () => {
+    setLoading(true);
+    setError('');
+    const { data, error: loadError } = await supabase.from('projects').select('*').order('display_order', { ascending: true }).order('id', { ascending: true });
+    if (loadError) setError(loadError.message);
+    else setProjects(data || []);
+    setLoading(false);
+  };
+
+  useEffect(() => { loadProjects(); }, []);
+
+  const updateDraft = (field, value) => setDraft(current => ({ ...current, [field]: value }));
+
+  const resetForm = () => {
+    setDraft({ ...emptyProject, display_order: projects.length });
+    setEditingId(null);
+    setMessage('');
+    setError('');
+  };
+
+  const saveProject = async event => {
+    event.preventDefault();
+    setSaving(true);
+    setMessage('');
+    setError('');
+
+    const technologies = draft.technologies
+      .split(',')
+      .map(item => item.trim())
+      .filter(Boolean);
+
+    const payload = {
+      title: draft.title.trim(),
+      description: draft.description.trim(),
+      image_url: draft.image_url.trim(),
+      github_url: draft.github_url.trim(),
+      live_url: draft.live_url.trim(),
+      technologies,
+      featured: Boolean(draft.featured),
+      display_order: Math.max(0, Number(draft.display_order) || 0)
+    };
+
+    if (!payload.title) {
+      setError('Project title is required.');
+      setSaving(false);
+      return;
+    }
+
+    const query = editingId
+      ? supabase.from('projects').update(payload).eq('id', editingId).select('*').single()
+      : supabase.from('projects').insert(payload).select('*').single();
+
+    const { data, error: saveError } = await query;
+    if (saveError) {
+      setError(saveError.message);
+    } else {
+      setMessage(editingId ? 'Project updated successfully.' : 'Project added successfully.');
+      if (editingId) setProjects(current => current.map(item => item.id === editingId ? data : item).sort((a, b) => (a.display_order - b.display_order) || (a.id - b.id)));
+      else setProjects(current => [...current, data].sort((a, b) => (a.display_order - b.display_order) || (a.id - b.id)));
+      resetForm();
+    }
+    setSaving(false);
+  };
+
+  const editProject = project => {
+    setEditingId(project.id);
+    setDraft({
+      title: project.title || '',
+      description: project.description || '',
+      image_url: project.image_url || '',
+      github_url: project.github_url || '',
+      live_url: project.live_url || '',
+      technologies: Array.isArray(project.technologies) ? project.technologies.join(', ') : '',
+      featured: Boolean(project.featured),
+      display_order: project.display_order ?? 0
+    });
+    setMessage('');
+    setError('');
+  };
+
+  const deleteProject = async id => {
+    if (!window.confirm('Delete this project from your portfolio?')) return;
+    setError('');
+    setMessage('');
+    const { error: deleteError } = await supabase.from('projects').delete().eq('id', id);
+    if (deleteError) setError(deleteError.message);
+    else {
+      setProjects(current => current.filter(item => item.id !== id));
+      if (editingId === id) resetForm();
+      setMessage('Project deleted successfully.');
+    }
+  };
+
+  return (
+    <div className="editor-panel">
+      <div className="editor-heading">
+        <div><span className="eyebrow">03 / PROJECTS</span><h2>Projects <span>Editor.</span></h2></div>
+        <div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">PUBLIC PORTFOLIO ↗</a></div>
+      </div>
+
+      <form className="project-editor-form" onSubmit={saveProject}>
+        <div className="skill-editor-title">{editingId ? 'EDIT PROJECT' : 'ADD PROJECT'}</div>
+        <div className="editor-fields">
+          <label>PROJECT TITLE<input value={draft.title} onChange={e => updateDraft('title', e.target.value)} placeholder="Lumina" required /></label>
+          <label>DISPLAY ORDER<input type="number" min="0" value={draft.display_order} onChange={e => updateDraft('display_order', e.target.value)} /></label>
+          <label>GITHUB URL<input value={draft.github_url} onChange={e => updateDraft('github_url', e.target.value)} placeholder="https://github.com/..." /></label>
+          <label>LIVE URL<input value={draft.live_url} onChange={e => updateDraft('live_url', e.target.value)} placeholder="https://..." /></label>
+          <label>IMAGE URL<input value={draft.image_url} onChange={e => updateDraft('image_url', e.target.value)} placeholder="Optional project image URL" /></label>
+          <label>TECHNOLOGIES<input value={draft.technologies} onChange={e => updateDraft('technologies', e.target.value)} placeholder="React, FastAPI, Supabase" /></label>
+          <label className="full-field">DESCRIPTION<textarea value={draft.description} onChange={e => updateDraft('description', e.target.value)} placeholder="Describe what you built and the problem it solves..." rows="5" /></label>
+        </div>
+        <label className="project-featured-toggle"><input type="checkbox" checked={draft.featured} onChange={e => updateDraft('featured', e.target.checked)} /><span>FEATURE THIS PROJECT ON THE PORTFOLIO</span></label>
+        <div className="skill-form-actions">
+          <button className="admin-primary-button" disabled={saving}>{saving ? 'SAVING...' : editingId ? 'UPDATE PROJECT →' : 'ADD PROJECT →'}</button>
+          {editingId && <button type="button" className="admin-secondary-button" onClick={resetForm}>CANCEL</button>}
+        </div>
+      </form>
+
+      {error && <div className="admin-error editor-message">{error}</div>}
+      {message && <div className="editor-success editor-message">{message}</div>}
+
+      <div className="projects-admin-list">
+        {loading ? <div className="editor-status">LOADING PROJECTS...</div> : projects.length === 0 ? <div className="editor-status">NO PROJECTS YET. ADD YOUR FIRST PROJECT ABOVE.</div> : projects.map((project, index) => (
+          <div className="project-admin-card" key={project.id}>
+            <div className="project-admin-number">0{index + 1}</div>
+            <div className="project-admin-main">
+              <div className="project-admin-title-row"><h3>{project.title}</h3>{project.featured && <span className="project-featured-badge">FEATURED</span>}</div>
+              <p>{project.description || 'No description added.'}</p>
+              <div className="project-admin-meta">
+                <span>ORDER {project.display_order}</span>
+                <span>{Array.isArray(project.technologies) && project.technologies.length ? project.technologies.join(' · ') : 'NO TECHNOLOGIES'}</span>
+              </div>
+              <div className="project-admin-links">
+                {project.github_url && <a href={project.github_url} target="_blank" rel="noreferrer">GITHUB ↗</a>}
+                {project.live_url && <a href={project.live_url} target="_blank" rel="noreferrer">LIVE ↗</a>}
+              </div>
+            </div>
+            <div className="project-row-actions"><button className="admin-secondary-button" onClick={() => editProject(project)}>EDIT</button><button className="admin-danger-button" onClick={() => deleteProject(project.id)}>DELETE</button></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Admin() {
   const [checking, setChecking] = useState(true);
   const [user, setUser] = useState(null);
@@ -249,7 +405,7 @@ export default function Admin() {
           </nav>
         </aside>
         <section className="admin-editor-area">
-          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : selected === 'SKILLS' ? <SkillsEditor /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
+          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : selected === 'SKILLS' ? <SkillsEditor /> : selected === 'PROJECTS' ? <ProjectsEditor /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
         </section>
       </main>
     </div>
