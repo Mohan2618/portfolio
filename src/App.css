@@ -617,3 +617,15 @@ html:has(.admin-app), body:has(.admin-app), #root:has(.admin-app){
   .project-row-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
   .project-row-actions .admin-secondary-button,.project-row-actions .admin-danger-button{width:100%}
 }
+
+
+/* PUBLIC EXPERIENCE */
+.experience-grid{display:grid;gap:16px}
+.experience-card{position:relative;padding:24px}
+.experience-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+.experience-role{margin:8px 0 4px;font:18px var(--font-mono);color:var(--text)}
+.experience-company{font:11px var(--font-mono);color:var(--cyan);letter-spacing:1px}
+.experience-date{font:9px var(--font-mono);color:var(--muted);letter-spacing:1px}
+.experience-location{margin:6px 0 14px;font:9px var(--font-mono);color:var(--muted)}
+.experience-description{margin:0;color:var(--muted);line-height:1.7;font-size:12px}
+.experience-card .tags{margin-top:16px}
