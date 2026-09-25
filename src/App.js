@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { supabase } from './lib/supabase';
+import Login from './Login';
+import Admin from './Admin';
 
 const emptyPortfolio = {
   profile: { initials: 'ML', name: '', shortName: '', role: '', tagline: '', about: '', location: '', avatarUrl: '', resumeUrl: '', email: '' },
