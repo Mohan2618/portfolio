@@ -490,12 +490,24 @@ function SiteSettingsEditor() {
   return <div className="editor-panel"><div className="editor-heading"><div><span className="eyebrow">08 / SITE SETTINGS</span><h2>Site <span>Settings.</span></h2></div></div><form className="project-editor-form" onSubmit={save}><div className="editor-fields"><label>SITE TITLE<input value={draft.site_title} onChange={e=>setDraft(d=>({...d,site_title:e.target.value}))}/></label><label>HERO BADGE<input value={draft.hero_badge} onChange={e=>setDraft(d=>({...d,hero_badge:e.target.value}))}/></label><label>FOOTER TEXT<input value={draft.footer_text} onChange={e=>setDraft(d=>({...d,footer_text:e.target.value}))}/></label><label className="full-field">CONTACT MESSAGE<textarea rows="4" value={draft.contact_message} onChange={e=>setDraft(d=>({...d,contact_message:e.target.value}))}/></label></div>{error&&<div className="admin-error editor-message">{error}</div>}{message&&<div className="editor-success editor-message">{message}</div>}<button className="admin-primary-button" disabled={saving}>{saving?'SAVING...':'SAVE SITE SETTINGS →'}</button></form></div>;
 }
 
+function ControlCenter({ onSelect }) {
+  return <div className="editor-panel control-center-panel">
+    <div className="editor-heading">
+      <div><span className="eyebrow">ADMIN • CONTROL CENTER</span><h2>Manage your <span>portfolio.</span></h2><p className="admin-muted">Choose a section below to view, edit, or update your portfolio data.</p></div>
+      <div className="editor-heading-actions"><a href="/" className="admin-secondary-button">PUBLIC PORTFOLIO ↗</a></div>
+    </div>
+    <div className="admin-control-grid">
+      {sections.map(([title, description], index) => <button key={title} className="admin-control-card" onClick={() => { onSelect(title); window.history.replaceState(null, '', '/?admin=dashboard&section=' + encodeURIComponent(title)); }}><span>0{index + 1}</span><strong>{title}</strong><small>{description}</small><b>OPEN →</b></button>)}
+    </div>
+  </div>;
+}
+
 function Admin() {
   const [checking, setChecking] = useState(true);
   const [user, setUser] = useState(null);
   const [authorized, setAuthorized] = useState(false);
   const [error, setError] = useState('');
-  const [selected, setSelected] = useState('PROFILE');
+  const [selected, setSelected] = useState(() => new URLSearchParams(window.location.search).get('section') || 'CONTROL_CENTER');
 
   useEffect(() => {
     let mounted = true;
@@ -529,11 +541,12 @@ function Admin() {
         <aside className="admin-sidebar">
           <div className="admin-user"><span className="admin-label">SIGNED IN AS</span><strong>{user?.email}</strong><span className="admin-badge">● ADMIN ACCESS</span></div>
           <nav className="admin-side-nav">
-            {sections.map(([title, description], index) => <button key={title} className={selected === title ? 'admin-side-item active' : 'admin-side-item'} onClick={() => setSelected(title)}><span>0{index + 1}</span><div><strong>{title}</strong><small>{description}</small></div></button>)}
+            <button className={selected === 'CONTROL_CENTER' ? 'admin-side-item active' : 'admin-side-item'} onClick={() => { setSelected('CONTROL_CENTER'); window.history.replaceState(null, '', '/?admin=dashboard&section=CONTROL_CENTER'); }}><span>⌂</span><div><strong>CONTROL CENTER</strong><small>Return to all portfolio editors.</small></div></button>
+            {sections.map(([title, description], index) => <button key={title} className={selected === title ? 'admin-side-item active' : 'admin-side-item'} onClick={() => { setSelected(title); window.history.replaceState(null, '', `/?admin=dashboard&section=${encodeURIComponent(title)}`); }}><span>0{index + 1}</span><div><strong>{title}</strong><small>{description}</small></div></button>)}
           </nav>
         </aside>
         <section className="admin-editor-area">
-          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : selected === 'SKILLS' ? <SkillsEditor /> : selected === 'PROJECTS' ? <ProjectsEditor /> : selected === 'EXPERIENCE' ? <ExperienceEditor /> : selected === 'EDUCATION' ? <EducationEditor /> : selected === 'CERTIFICATIONS' ? <CertificationsEditor /> : selected === 'SOCIAL LINKS' ? <SocialLinksEditor /> : selected === 'SITE SETTINGS' ? <SiteSettingsEditor /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
+          {selected === 'CONTROL_CENTER' ? <ControlCenter onSelect={setSelected} /> : selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : selected === 'SKILLS' ? <SkillsEditor /> : selected === 'PROJECTS' ? <ProjectsEditor /> : selected === 'EXPERIENCE' ? <ExperienceEditor /> : selected === 'EDUCATION' ? <EducationEditor /> : selected === 'CERTIFICATIONS' ? <CertificationsEditor /> : selected === 'SOCIAL LINKS' ? <SocialLinksEditor /> : selected === 'SITE SETTINGS' ? <SiteSettingsEditor /> : <ControlCenter onSelect={setSelected} />}
         </section>
       </main>
     </div>
