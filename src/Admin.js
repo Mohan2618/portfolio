@@ -83,6 +83,129 @@ function ProfileEditor({ userId }) {
   );
 }
 
+
+function SkillsEditor() {
+  const emptySkill = { name: '', category: '', level: 80, display_order: 0 };
+  const [skills, setSkills] = useState([]);
+  const [draft, setDraft] = useState(emptySkill);
+  const [editingId, setEditingId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  const loadSkills = async () => {
+    setLoading(true);
+    setError('');
+    const { data, error: loadError } = await supabase.from('skills').select('*').order('display_order', { ascending: true }).order('id', { ascending: true });
+    if (loadError) setError(loadError.message);
+    else setSkills(data || []);
+    setLoading(false);
+  };
+
+  useEffect(() => { loadSkills(); }, []);
+
+  const updateDraft = (field, value) => setDraft(current => ({ ...current, [field]: value }));
+
+  const resetForm = () => {
+    setDraft({ ...emptySkill, display_order: skills.length });
+    setEditingId(null);
+    setMessage('');
+    setError('');
+  };
+
+  const saveSkill = async event => {
+    event.preventDefault();
+    setSaving(true);
+    setMessage('');
+    setError('');
+
+    const payload = {
+      name: draft.name.trim(),
+      category: draft.category.trim(),
+      level: Math.max(0, Math.min(100, Number(draft.level) || 0)),
+      display_order: Math.max(0, Number(draft.display_order) || 0)
+    };
+
+    if (!payload.name) {
+      setError('Skill name is required.');
+      setSaving(false);
+      return;
+    }
+
+    const query = editingId
+      ? supabase.from('skills').update(payload).eq('id', editingId).select('*').single()
+      : supabase.from('skills').insert(payload).select('*').single();
+
+    const { data, error: saveError } = await query;
+    if (saveError) {
+      setError(saveError.message);
+    } else {
+      setMessage(editingId ? 'Skill updated successfully.' : 'Skill added successfully.');
+      if (editingId) setSkills(current => current.map(item => item.id === editingId ? data : item));
+      else setSkills(current => [...current, data].sort((a, b) => (a.display_order - b.display_order) || (a.id - b.id)));
+      resetForm();
+    }
+    setSaving(false);
+  };
+
+  const editSkill = skill => {
+    setEditingId(skill.id);
+    setDraft({ name: skill.name || '', category: skill.category || '', level: skill.level ?? 80, display_order: skill.display_order ?? 0 });
+    setMessage('');
+    setError('');
+  };
+
+  const deleteSkill = async id => {
+    if (!window.confirm('Delete this skill from your portfolio?')) return;
+    setError('');
+    setMessage('');
+    const { error: deleteError } = await supabase.from('skills').delete().eq('id', id);
+    if (deleteError) setError(deleteError.message);
+    else {
+      setSkills(current => current.filter(item => item.id !== id));
+      if (editingId === id) resetForm();
+      setMessage('Skill deleted successfully.');
+    }
+  };
+
+  return (
+    <div className="editor-panel">
+      <div className="editor-heading">
+        <div><span className="eyebrow">02 / SKILLS</span><h2>Skills <span>Editor.</span></h2></div>
+        <div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">PUBLIC PORTFOLIO ↗</a></div>
+      </div>
+
+      <form className="skill-editor-form" onSubmit={saveSkill}>
+        <div className="skill-editor-title">{editingId ? 'EDIT SKILL' : 'ADD SKILL'}</div>
+        <div className="editor-fields">
+          <label>SKILL NAME<input value={draft.name} onChange={e => updateDraft('name', e.target.value)} placeholder="React" required /></label>
+          <label>CATEGORY<input value={draft.category} onChange={e => updateDraft('category', e.target.value)} placeholder="Frontend" /></label>
+          <label>PROFICIENCY %<input type="number" min="0" max="100" value={draft.level} onChange={e => updateDraft('level', e.target.value)} /></label>
+          <label>DISPLAY ORDER<input type="number" min="0" value={draft.display_order} onChange={e => updateDraft('display_order', e.target.value)} /></label>
+        </div>
+        <div className="skill-form-actions">
+          <button className="admin-primary-button" disabled={saving}>{saving ? 'SAVING...' : editingId ? 'UPDATE SKILL →' : 'ADD SKILL →'}</button>
+          {editingId && <button type="button" className="admin-secondary-button" onClick={resetForm}>CANCEL</button>}
+        </div>
+      </form>
+
+      {error && <div className="admin-error editor-message">{error}</div>}
+      {message && <div className="editor-success editor-message">{message}</div>}
+
+      <div className="skills-admin-list">
+        <div className="skills-admin-list-head"><span>SKILL</span><span>CATEGORY</span><span>LEVEL</span><span>ORDER</span><span>ACTIONS</span></div>
+        {loading ? <div className="editor-status">LOADING SKILLS...</div> : skills.length === 0 ? <div className="editor-status">NO SKILLS YET. ADD YOUR FIRST SKILL ABOVE.</div> : skills.map(skill => (
+          <div className="skill-admin-row" key={skill.id}>
+            <strong>{skill.name}</strong><span>{skill.category || '—'}</span><span>{skill.level}%</span><span>{skill.display_order}</span>
+            <div className="skill-row-actions"><button className="admin-secondary-button" onClick={() => editSkill(skill)}>EDIT</button><button className="admin-danger-button" onClick={() => deleteSkill(skill.id)}>DELETE</button></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Admin() {
   const [checking, setChecking] = useState(true);
   const [user, setUser] = useState(null);
@@ -126,7 +249,7 @@ export default function Admin() {
           </nav>
         </aside>
         <section className="admin-editor-area">
-          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
+          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : selected === 'SKILLS' ? <SkillsEditor /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
         </section>
       </main>
     </div>
