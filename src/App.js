@@ -40,7 +40,7 @@ function TiltCard({ children, className = '' }) {
 
 function Navbar({ active, setActive }) {
   const links = ['HOME', 'ABOUT', 'SKILLS', 'PROJECTS', 'RESUME', 'CONTACT'];
-  return <header className="navbar"><button className="brand-3d" onClick={() => setActive('HOME')} aria-label="Go home"><span>ML</span></button><nav>{links.map(link => <button key={link} className={active === link ? 'nav-link active' : 'nav-link'} onClick={() => setActive(link)}>{link}</button>)}<a className="nav-link admin-nav-link" href="/login">ADMIN</a></nav></header>;
+  return <header className="navbar"><button className="brand-3d" onClick={() => setActive('HOME')} aria-label="Go home"><span>ML</span></button><nav>{links.map(link => <button key={link} className={active === link ? 'nav-link active' : 'nav-link'} onClick={() => setActive(link)}>{link}</button>)}<a className="nav-link admin-nav-link" href="/?admin=login">ADMIN</a></nav></header>;
 }
 
 function Hero({ portfolio, setActive }) {
@@ -126,7 +126,8 @@ function PublicPortfolio() {
 
 export default function App() {
   const path = window.location.pathname.replace(/\/$/, '') || '/';
-  if (path === '/login') return <Login />;
-  if (path === '/admin') return <Admin />;
+  const adminRoute = new URLSearchParams(window.location.search).get('admin');
+  if (adminRoute === 'login') return <Login />;
+  if (adminRoute === 'dashboard') return <Admin />;
   return <PublicPortfolio />;
 }
