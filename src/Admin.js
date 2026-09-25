@@ -15,7 +15,7 @@ const sections = [
 
 const emptyProfile = { name: '', role: '', tagline: '', about: '', location: '', initials: '', avatar_url: '', resume_url: '', email: '' };
 
-function ProfileEditor() {
+function ProfileEditor({ userId }) {
   const [profile, setProfile] = useState(emptyProfile);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -39,8 +39,6 @@ function ProfileEditor() {
     setSaving(true);
     setMessage('');
     setError('');
-    const { data: sessionData } = await supabase.auth.getSession();
-    const userId = sessionData.session?.user?.id;
     if (!userId) { setError('Your session has expired. Please sign in again.'); setSaving(false); return; }
 
     const payload = {
@@ -56,9 +54,9 @@ function ProfileEditor() {
       email: profile.email
     };
 
-    const { error: saveError } = await supabase.from('profiles').upsert(payload, { onConflict: 'id' });
+    const { data: savedProfile, error: saveError } = await supabase.from('profiles').update(payload).eq('id', userId).select('*').single();
     if (saveError) setError(saveError.message);
-    else setMessage('Profile saved successfully.');
+    else { setProfile({ ...emptyProfile, ...savedProfile }); setMessage('Profile saved successfully. Refresh the public site to see the changes.'); }
     setSaving(false);
   };
 
@@ -68,7 +66,7 @@ function ProfileEditor() {
     <div className="editor-panel">
       <div className="editor-heading">
         <div><span className="eyebrow">01 / PROFILE</span><h2>Profile <span>Editor.</span></h2></div>
-        <span className="editor-live">● LIVE DATA</span>
+        <div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">PUBLIC PORTFOLIO ↗</a></div>
       </div>
       <form className="editor-form" onSubmit={save}>
         <div className="editor-fields">
@@ -128,7 +126,7 @@ export default function Admin() {
           </nav>
         </aside>
         <section className="admin-editor-area">
-          {selected === 'PROFILE' ? <ProfileEditor /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
+          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
         </section>
       </main>
     </div>
