@@ -5,7 +5,7 @@ import Login from './Login';
 import Admin from './Admin';
 
 const emptyPortfolio = {
-  profile: { initials: 'ML', name: '', shortName: '', role: '', tagline: '', about: '', location: '' },
+  profile: { initials: 'ML', name: '', shortName: '', role: '', tagline: '', about: '', location: '', avatarUrl: '', resumeUrl: '', email: '' },
   skills: [], projects: [], socials: [],
   settings: { heroBadge: 'HELLO, WORLD', footerText: 'BUILT WITH REACT', contactMessage: "Let's build something useful." }
 };
@@ -48,7 +48,7 @@ function Hero({ portfolio, setActive }) {
 }
 
 function About({ portfolio }) {
-  return <section className="section" id="ABOUT"><div className="section-heading"><span className="eyebrow">01 / ABOUT</span><h2>Behind the <span>builds.</span></h2></div><div className="about-grid"><TiltCard className="profile-card"><div className="avatar-3d">{portfolio.profile.initials}</div><span className="status-dot">AVAILABLE FOR OPPORTUNITIES</span><h3>{portfolio.profile.name}</h3><p>{portfolio.profile.location}</p></TiltCard><div className="about-copy"><p className="lead">{portfolio.profile.about}</p><div className="stats-grid"><TiltCard><strong>AI</strong><span>Applied intelligence</span></TiltCard><TiltCard><strong>WEB</strong><span>Full-stack products</span></TiltCard><TiltCard><strong>API</strong><span>Backend systems</span></TiltCard><TiltCard><strong>CODE</strong><span>Problem solving</span></TiltCard></div></div></div></section>;
+  return <section className="section" id="ABOUT"><div className="section-heading"><span className="eyebrow">01 / ABOUT</span><h2>Behind the <span>builds.</span></h2></div><div className="about-grid"><TiltCard className="profile-card"><div className="avatar-3d">{portfolio.profile.avatarUrl ? <img src={portfolio.profile.avatarUrl} alt={portfolio.profile.name} /> : portfolio.profile.initials}</div><span className="status-dot">AVAILABLE FOR OPPORTUNITIES</span><h3>{portfolio.profile.name}</h3><p>{portfolio.profile.location}</p></TiltCard><div className="about-copy"><p className="lead">{portfolio.profile.about}</p><div className="stats-grid"><TiltCard><strong>AI</strong><span>Applied intelligence</span></TiltCard><TiltCard><strong>WEB</strong><span>Full-stack products</span></TiltCard><TiltCard><strong>API</strong><span>Backend systems</span></TiltCard><TiltCard><strong>CODE</strong><span>Problem solving</span></TiltCard></div></div></div></section>;
 }
 
 function Skills({ skills }) {
@@ -64,8 +64,8 @@ function Projects({ projects }) {
   return <section className="section" id="PROJECTS"><div className="section-heading"><span className="eyebrow">03 / PROJECTS</span><h2>Things I've <span>built.</span></h2></div><div className="projects-grid">{projects.map((project, index) => <TiltCard key={project.id || project.title} className="project-card"><div className="project-number">0{index + 1}</div><span className="project-type">{project.type || projectType(project.title)}</span><h3>{project.title}</h3><p>{project.description}</p><div className="tags">{(project.tech || []).map(item => <span key={item}>{item}</span>)}</div><div className="project-arrow">↗</div></TiltCard>)}</div></section>;
 }
 
-function Resume() {
-  return <section className="section resume-section" id="RESUME"><div className="resume-card"><span className="eyebrow">04 / RESUME</span><h2>Ready to <span>connect?</span></h2><p>View the latest resume and learn more about my technical experience.</p><a className="button-3d primary" href="/portfolio/Resume-AIML.pdf" target="_blank" rel="noreferrer">View Resume ↗</a></div></section>;
+function Resume({ portfolio }) {
+  return <section className="section resume-section" id="RESUME"><div className="resume-card"><span className="eyebrow">04 / RESUME</span><h2>Ready to <span>connect?</span></h2><p>View the latest resume and learn more about my technical experience.</p><a className="button-3d primary" href={portfolio.profile.resumeUrl || "/portfolio/Resume-AIML.pdf"} target="_blank" rel="noreferrer">View Resume ↗</a></div></section>;
 }
 
 function Contact({ portfolio }) {
@@ -85,7 +85,7 @@ async function loadPortfolio() {
   const name = profile?.name || '';
   const firstName = name.trim().split(/\s+/)[0] || '';
   return {
-    profile: { initials: profile?.initials || 'ML', name, shortName: profile?.short_name || firstName.toUpperCase(), role: profile?.role || '', tagline: profile?.tagline || '', about: profile?.about || '', location: profile?.location || '' },
+    profile: { initials: profile?.initials || 'ML', name, shortName: firstName.toUpperCase(), role: profile?.role || '', tagline: profile?.tagline || '', about: profile?.about || '', location: profile?.location || '', avatarUrl: profile?.avatar_url || '', resumeUrl: profile?.resume_url || '', email: profile?.email || '' },
     skills: (skills || []).map(item => ({ id: item.id, name: item.name, level: item.level ?? 0, group: item.category || 'Skills' })),
     projects: (projects || []).map(item => ({ id: item.id, title: item.title, type: item.type || '', description: item.description || '', tech: item.technologies || [] })),
     socials: (socials || []).map(item => ({ id: item.id, label: item.platform, href: item.url })),
@@ -121,7 +121,7 @@ function PublicPortfolio() {
   if (loading) return <div className="app"><main className="main-content"><section className="section hero"><div className="hero-grid" /><div className="hero-copy"><span className="eyebrow">LOADING PORTFOLIO</span><h1>MOHAN<span>.</span></h1><p>Loading portfolio data from Supabase...</p></div></section></main></div>;
   if (error) return <div className="app"><main className="main-content"><section className="section hero"><div className="hero-copy"><span className="eyebrow">DATABASE ERROR</span><h1>PORTFOLIO<span>.</span></h1><p>{error}</p><button className="button-3d primary" onClick={() => window.location.reload()}>Retry</button></div></section></main></div>;
 
-  return <div className="app"><Navbar active={active} setActive={goTo} /><main className="main-content"><Hero portfolio={portfolio} setActive={goTo} /><About portfolio={portfolio} /><Skills skills={portfolio.skills} /><Projects projects={portfolio.projects} /><Resume /><Contact portfolio={portfolio} /><footer>{portfolio.profile.name.toUpperCase()} <span>•</span> {portfolio.settings.footerText}</footer></main></div>;
+  return <div className="app"><Navbar active={active} setActive={goTo} /><main className="main-content"><Hero portfolio={portfolio} setActive={goTo} /><About portfolio={portfolio} /><Skills skills={portfolio.skills} /><Projects projects={portfolio.projects} /><Resume portfolio={portfolio} /><Contact portfolio={portfolio} /><footer>{portfolio.profile.name.toUpperCase()} <span>•</span> {portfolio.settings.footerText}</footer></main></div>;
 }
 
 export default function App() {
