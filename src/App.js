@@ -1,39 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
+import { supabase } from './lib/supabase';
 
-const portfolio = {
+const emptyPortfolio = {
   profile: {
     initials: 'ML',
-    name: 'Mohan Lingabathina',
-    shortName: 'MOHAN',
-    role: 'Software Engineer • AI/ML • Full Stack',
-    tagline: 'I build intelligent, practical software and turn ideas into products.',
-    about: 'Computer Science and Engineering student specializing in AI/ML at SRM University AP. I enjoy building full-stack applications, AI-powered tools, APIs, and developer-focused products.',
-    location: 'Andhra Pradesh, India'
+    name: '',
+    shortName: '',
+    role: '',
+    tagline: '',
+    about: '',
+    location: ''
   },
-  skills: [
-    { name: 'Java', level: 88, group: 'Languages' },
-    { name: 'Python', level: 92, group: 'Languages' },
-    { name: 'JavaScript', level: 88, group: 'Languages' },
-    { name: 'SQL', level: 86, group: 'Languages' },
-    { name: 'React', level: 84, group: 'Frontend' },
-    { name: 'FastAPI', level: 86, group: 'Backend' },
-    { name: 'Flask', level: 84, group: 'Backend' },
-    { name: 'Node.js', level: 78, group: 'Backend' },
-    { name: 'AI / ML', level: 86, group: 'AI' },
-    { name: 'Git / GitHub', level: 90, group: 'Tools' }
-  ],
-  projects: [
-    { title: 'Lumina', type: 'AI Application', description: 'AI-powered image processing and conversational assistant built as a full-stack application.', tech: ['React', 'Flask', 'Supabase', 'AI APIs'] },
-    { title: 'ReviewRadar AI', type: 'AI / Search', description: 'Semantic review search platform using embeddings, vector search, and FastAPI.', tech: ['FastAPI', 'ChromaDB', 'Python', 'ML'] },
-    { title: 'AuraSum', type: 'NLP', description: 'Offline document summarization application using extractive and local transformer-based summarization.', tech: ['Flask', 'T5', 'NLP', 'Python'] },
-    { title: 'TestPilot', type: 'Developer Tool', description: 'A planned automated software testing platform for analyzing applications against requirements.', tech: ['FastAPI', 'React', 'Testing', 'AI'] }
-  ],
-  socials: [
-    { label: 'GitHub', href: 'https://github.com/Mohan2618' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
-    { label: 'Email', href: 'mailto:mohanlingabathina8@gmail.com' }
-  ]
+  skills: [],
+  projects: [],
+  socials: [],
+  settings: {
+    heroBadge: 'HELLO, WORLD',
+    footerText: 'BUILT WITH REACT',
+    contactMessage: "Let's build something useful."
+  }
 };
 
 function useTilt() {
@@ -79,14 +65,14 @@ function Navbar({ active, setActive }) {
   );
 }
 
-function Hero({ setActive }) {
+function Hero({ portfolio, setActive }) {
   return (
     <section className="section hero" id="HOME">
       <div className="hero-grid" />
       <div className="orb orb-a" />
       <div className="orb orb-b" />
       <div className="hero-copy">
-        <span className="eyebrow">HELLO, WORLD</span>
+        <span className="eyebrow">{portfolio.settings.heroBadge}</span>
         <h1>{portfolio.profile.shortName}<span>.</span></h1>
         <div className="hero-role">{portfolio.profile.role}</div>
         <p>{portfolio.profile.tagline}</p>
@@ -107,7 +93,7 @@ function Hero({ setActive }) {
   );
 }
 
-function About() {
+function About({ portfolio }) {
   return (
     <section className="section" id="ABOUT">
       <div className="section-heading"><span className="eyebrow">01 / ABOUT</span><h2>Behind the <span>builds.</span></h2></div>
@@ -131,13 +117,13 @@ function About() {
   );
 }
 
-function Skills() {
+function Skills({ skills }) {
   return (
     <section className="section" id="SKILLS">
       <div className="section-heading"><span className="eyebrow">02 / SKILLS</span><h2>A stack built to <span>ship.</span></h2></div>
       <div className="skills-grid">
-        {portfolio.skills.map(skill => (
-          <TiltCard key={skill.name} className="skill-card">
+        {skills.map(skill => (
+          <TiltCard key={skill.id || skill.name} className="skill-card">
             <div className="skill-top"><span>{skill.name}</span><small>{skill.group}</small></div>
             <div className="skill-bar"><span style={{ width: skill.level + '%' }} /></div>
             <strong>{skill.level}%</strong>
@@ -148,17 +134,27 @@ function Skills() {
   );
 }
 
-function Projects() {
+function projectType(title) {
+  const types = {
+    'Lumina': 'AI Application',
+    'ReviewRadar AI': 'AI / Search',
+    'AuraSum': 'NLP',
+    'TestPilot': 'Developer Tool'
+  };
+  return types[title] || 'Project';
+}
+
+function Projects({ projects }) {
   return (
     <section className="section" id="PROJECTS">
       <div className="section-heading"><span className="eyebrow">03 / PROJECTS</span><h2>Things I've <span>built.</span></h2></div>
       <div className="projects-grid">
-        {portfolio.projects.map((project, index) => (
-          <TiltCard key={project.title} className="project-card">
+        {projects.map((project, index) => (
+          <TiltCard key={project.id || project.title} className="project-card">
             <div className="project-number">0{index + 1}</div>
-            <span className="project-type">{project.type}</span>
+            <span className="project-type">{project.type || projectType(project.title)}</span>
             <h3>{project.title}</h3><p>{project.description}</p>
-            <div className="tags">{project.tech.map(item => <span key={item}>{item}</span>)}</div>
+            <div className="tags">{(project.tech || []).map(item => <span key={item}>{item}</span>)}</div>
             <div className="project-arrow">↗</div>
           </TiltCard>
         ))}
@@ -179,13 +175,13 @@ function Resume() {
   );
 }
 
-function Contact() {
+function Contact({ portfolio }) {
   return (
     <section className="section contact-section" id="CONTACT">
-      <div className="section-heading"><span className="eyebrow">05 / CONTACT</span><h2>Let's build something <span>useful.</span></h2></div>
+      <div className="section-heading"><span className="eyebrow">05 / CONTACT</span><h2>{portfolio.settings.contactMessage}</h2></div>
       <div className="contact-grid">
         {portfolio.socials.map(item => (
-          <TiltCard key={item.label} className="contact-card">
+          <TiltCard key={item.id || item.label} className="contact-card">
             <span className="contact-index">↗</span><small>CONNECT</small><h3>{item.label}</h3>
             <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">{item.href.replace('mailto:', '')}</a>
           </TiltCard>
@@ -195,8 +191,91 @@ function Contact() {
   );
 }
 
+async function loadPortfolio() {
+  const [
+    { data: profile, error: profileError },
+    { data: skills, error: skillsError },
+    { data: projects, error: projectsError },
+    { data: socials, error: socialsError },
+    { data: settings, error: settingsError }
+  ] = await Promise.all([
+    supabase.from('profiles').select('*').limit(1).maybeSingle(),
+    supabase.from('skills').select('*').order('display_order', { ascending: true }),
+    supabase.from('projects').select('*').order('display_order', { ascending: true }),
+    supabase.from('social_links').select('*').order('display_order', { ascending: true }),
+    supabase.from('site_settings').select('*').eq('id', 1).maybeSingle()
+  ]);
+
+  const error = profileError || skillsError || projectsError || socialsError || settingsError;
+  if (error) throw error;
+
+  const name = profile?.name || '';
+  const firstName = name.trim().split(/\s+/)[0] || '';
+
+  return {
+    profile: {
+      initials: profile?.initials || 'ML',
+      name,
+      shortName: profile?.short_name || firstName.toUpperCase(),
+      role: profile?.role || '',
+      tagline: profile?.tagline || '',
+      about: profile?.about || '',
+      location: profile?.location || ''
+    },
+    skills: (skills || []).map(item => ({
+      id: item.id,
+      name: item.name,
+      level: item.level ?? 0,
+      group: item.category || 'Skills'
+    })),
+    projects: (projects || []).map(item => ({
+      id: item.id,
+      title: item.title,
+      type: item.type || '',
+      description: item.description || '',
+      tech: item.technologies || []
+    })),
+    socials: (socials || []).map(item => ({
+      id: item.id,
+      label: item.platform,
+      href: item.url
+    })),
+    settings: {
+      heroBadge: settings?.hero_badge || 'HELLO, WORLD',
+      footerText: settings?.footer_text || 'BUILT WITH REACT',
+      contactMessage: settings?.contact_message || "Let's build something useful."
+    }
+  };
+}
+
 export default function App() {
   const [active, setActive] = useState('HOME');
+  const [portfolio, setPortfolio] = useState(emptyPortfolio);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    let mounted = true;
+
+    loadPortfolio()
+      .then(data => {
+        if (mounted) {
+          setPortfolio(data);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        console.error('Failed to load portfolio data:', err);
+        if (mounted) {
+          setError(err.message || 'Unable to load portfolio data.');
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     const main = document.querySelector('.main-content');
@@ -217,12 +296,51 @@ export default function App() {
     setActive(id);
   };
 
+  if (loading) {
+    return (
+      <div className="app">
+        <main className="main-content">
+          <section className="section hero">
+            <div className="hero-grid" />
+            <div className="hero-copy">
+              <span className="eyebrow">LOADING PORTFOLIO</span>
+              <h1>MOHAN<span>.</span></h1>
+              <p>Loading portfolio data from Supabase...</p>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="app">
+        <main className="main-content">
+          <section className="section hero">
+            <div className="hero-copy">
+              <span className="eyebrow">DATABASE ERROR</span>
+              <h1>PORTFOLIO<span>.</span></h1>
+              <p>{error}</p>
+              <button className="button-3d primary" onClick={() => window.location.reload()}>Retry</button>
+            </div>
+          </section>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="app">
       <Navbar active={active} setActive={goTo} />
       <main className="main-content">
-        <Hero setActive={goTo} /><About /><Skills /><Projects /><Resume /><Contact />
-        <footer>MOHAN LINGABATHINA <span>•</span> BUILT WITH REACT</footer>
+        <Hero portfolio={portfolio} setActive={goTo} />
+        <About portfolio={portfolio} />
+        <Skills skills={portfolio.skills} />
+        <Projects projects={portfolio.projects} />
+        <Resume />
+        <Contact portfolio={portfolio} />
+        <footer>{portfolio.profile.name.toUpperCase()} <span>•</span> {portfolio.settings.footerText}</footer>
       </main>
     </div>
   );
