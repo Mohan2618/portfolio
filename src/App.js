@@ -73,14 +73,15 @@ function Contact({ portfolio }) {
 }
 
 async function loadPortfolio() {
-  const [ { data: profile, error: profileError }, { data: skills, error: skillsError }, { data: projects, error: projectsError }, { data: socials, error: socialsError }, { data: settings, error: settingsError } ] = await Promise.all([
+  const [ { data: profile, error: profileError }, { data: skills, error: skillsError }, { data: projects, error: projectsError }, { data: experience, error: experienceError }, { data: socials, error: socialsError }, { data: settings, error: settingsError } ] = await Promise.all([
     supabase.from('profiles').select('*').limit(1).maybeSingle(),
     supabase.from('skills').select('*').order('display_order', { ascending: true }),
     supabase.from('projects').select('*').order('display_order', { ascending: true }),
+    supabase.from('experience').select('*').order('display_order', { ascending: true }),
     supabase.from('social_links').select('*').order('display_order', { ascending: true }),
     supabase.from('site_settings').select('*').eq('id', 1).maybeSingle()
   ]);
-  const error = profileError || skillsError || projectsError || socialsError || settingsError;
+  const error = profileError || skillsError || projectsError || experienceError || socialsError || settingsError;
   if (error) throw error;
   const name = profile?.name || '';
   const firstName = name.trim().split(/\s+/)[0] || '';
@@ -88,6 +89,7 @@ async function loadPortfolio() {
     profile: { initials: profile?.initials || 'ML', name, shortName: firstName.toUpperCase(), role: profile?.role || '', tagline: profile?.tagline || '', about: profile?.about || '', location: profile?.location || '', avatarUrl: profile?.avatar_url || '', resumeUrl: profile?.resume_url || '', email: profile?.email || '' },
     skills: (skills || []).map(item => ({ id: item.id, name: item.name, level: item.level ?? 0, group: item.category || 'Skills' })),
     projects: (projects || []).map(item => ({ id: item.id, title: item.title, type: item.type || '', description: item.description || '', tech: item.technologies || [] })),
+    experience: (experience || []).map(item => ({ id: item.id, company: item.company, role: item.role, location: item.location || '', startDate: item.start_date || '', endDate: item.end_date || '', description: item.description || '', technologies: item.technologies || [] })),
     socials: (socials || []).map(item => ({ id: item.id, label: item.platform, href: item.url })),
     settings: { heroBadge: settings?.hero_badge || 'HELLO, WORLD', footerText: settings?.footer_text || 'BUILT WITH REACT', contactMessage: settings?.contact_message || "Let's build something useful." }
   };
