@@ -419,3 +419,6 @@ body{overflow:hidden;background:var(--bg)}
 @media(max-width:600px){.admin-layout{width:min(100% - 28px,1400px)}.admin-sidebar{padding:10px}.admin-side-nav{grid-template-columns:1fr}.editor-panel,.editor-placeholder{padding:20px}.editor-fields{grid-template-columns:1fr}.editor-fields label.full-field{grid-column:auto}.editor-heading{flex-direction:column}.admin-header{padding-top:28px}}
 
 .editor-heading-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.editor-heading-actions .admin-secondary-button{white-space:nowrap}.avatar-3d img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
+
+.editor-save-top{margin:0;padding:11px 14px;white-space:nowrap}.editor-save-bottom{display:none}.editor-heading-actions{position:sticky;top:0;z-index:5;background:rgba(12,15,23,.96);padding:6px;border-radius:14px}
+@media(max-width:600px){.editor-save-top{font-size:9px;padding:10px}.editor-heading-actions{width:100%;justify-content:flex-start}}
