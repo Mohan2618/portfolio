@@ -581,3 +581,39 @@ html:has(.admin-app), body:has(.admin-app), #root:has(.admin-app){
   .admin-app .admin-layout{width:calc(100% - 20px);padding-bottom:110px}
   .admin-app{padding-bottom:110px}
 }
+
+
+/* PROJECTS ADMIN */
+.project-editor-form{display:grid;gap:18px;margin-top:24px;padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025);box-shadow:inset 0 1px rgba(255,255,255,.03);transform:perspective(1200px) rotateX(.4deg)}
+.editor-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.editor-fields label{display:grid;gap:7px}
+.editor-fields .full-field{grid-column:1/-1}
+.editor-fields textarea{resize:vertical;min-height:120px}
+.project-featured-toggle{display:flex;align-items:center;gap:10px;color:var(--text);font:10px var(--font-mono);letter-spacing:1px}
+.project-featured-toggle input{accent-color:var(--cyan);width:16px;height:16px}
+.projects-admin-list{display:grid;gap:12px;margin-top:24px;padding-bottom:40px}
+.project-admin-card{display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:16px;align-items:start;padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.025);transform:perspective(1100px) rotateX(.35deg);transition:.2s}
+.project-admin-card:hover{border-color:rgba(82,230,255,.3);transform:perspective(1100px) rotateX(.35deg) translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.18)}
+.project-admin-number{font:18px var(--font-mono);color:var(--cyan);padding-top:2px}
+.project-admin-main{min-width:0}
+.project-admin-title-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.project-admin-title-row h3{margin:0;font:15px var(--font-mono);color:var(--text)}
+.project-featured-badge{padding:4px 7px;border:1px solid rgba(82,230,255,.35);border-radius:999px;color:var(--cyan);font:8px var(--font-mono);letter-spacing:1px}
+.project-admin-main p{margin:8px 0;color:var(--muted);font-size:12px;line-height:1.6}
+.project-admin-meta,.project-admin-links{display:flex;gap:10px;flex-wrap:wrap}
+.project-admin-meta span,.project-admin-links a{padding:7px 9px;border:1px solid var(--line);border-radius:9px;font:8px var(--font-mono);letter-spacing:1px;color:var(--muted);text-decoration:none}
+.project-admin-links a{color:var(--cyan)}
+.project-row-actions{display:flex;gap:7px;justify-content:flex-end}
+@media(max-width:900px){
+  .editor-fields{grid-template-columns:1fr}
+  .editor-fields .full-field{grid-column:auto}
+  .project-admin-card{grid-template-columns:40px minmax(0,1fr)}
+  .project-row-actions{grid-column:1/-1;justify-content:flex-start}
+}
+@media(max-width:600px){
+  .project-editor-form{padding:16px}
+  .project-admin-card{grid-template-columns:1fr;padding:14px}
+  .project-admin-number{font-size:15px}
+  .project-row-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .project-row-actions .admin-secondary-button,.project-row-actions .admin-danger-button{width:100%}
+}
