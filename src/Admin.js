@@ -208,6 +208,43 @@ function SkillsEditor() {
 
 
 
+function EducationEditor() {
+  const emptyEducation={institution:'',degree:'',field:'',start_date:'',end_date:'',grade:'',description:'',display_order:0};
+  const [items,setItems]=useState([]); const [draft,setDraft]=useState(emptyEducation); const [editingId,setEditingId]=useState(null);
+  const [loading,setLoading]=useState(true); const [saving,setSaving]=useState(false); const [message,setMessage]=useState(''); const [error,setError]=useState('');
+  const load=async()=>{setLoading(true);setError('');const {data,error:loadError}=await supabase.from('education').select('*').order('display_order',{ascending:true}).order('id',{ascending:true});if(loadError)setError(loadError.message);else setItems(data||[]);setLoading(false);};
+  useEffect(()=>{load();},[]);
+  const update=(field,value)=>setDraft(d=>({...d,[field]:value}));
+  const reset=()=>{setDraft({...emptyEducation,display_order:items.length});setEditingId(null);setMessage('');setError('');};
+  const save=async event=>{event.preventDefault();setSaving(true);setMessage('');setError('');
+    const payload={institution:draft.institution.trim(),degree:draft.degree.trim(),field:draft.field.trim(),start_date:draft.start_date||null,end_date:draft.end_date||null,grade:draft.grade.trim(),description:draft.description.trim(),display_order:Math.max(0,Number(draft.display_order)||0)};
+    if(!payload.institution){setError('Institution is required.');setSaving(false);return;}
+    const query=editingId?supabase.from('education').update(payload).eq('id',editingId).select('*').single():supabase.from('education').insert(payload).select('*').single();
+    const {data,error:saveError}=await query;
+    if(saveError)setError(saveError.message);else{setItems(cur=>(editingId?cur.map(x=>x.id===editingId?data:x):[...cur,data]).sort((a,b)=>(a.display_order-b.display_order)||(a.id-b.id)));setMessage(editingId?'Education updated successfully.':'Education added successfully.');reset();}setSaving(false);
+  };
+  const edit=item=>{setEditingId(item.id);setDraft({institution:item.institution||'',degree:item.degree||'',field:item.field||'',start_date:item.start_date||'',end_date:item.end_date||'',grade:item.grade||'',description:item.description||'',display_order:item.display_order??0});setMessage('');setError('');};
+  const remove=async id=>{if(!window.confirm('Delete this education entry?'))return;const {error:deleteError}=await supabase.from('education').delete().eq('id',id);if(deleteError)setError(deleteError.message);else{setItems(cur=>cur.filter(x=>x.id!==id));setMessage('Education deleted successfully.');if(editingId===id)reset();}};
+  return <div className="editor-panel">
+    <div className="editor-heading"><div><span className="eyebrow">05 / EDUCATION</span><h2>Education <span>Editor.</span></h2></div><div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">PUBLIC PORTFOLIO ↗</a></div></div>
+    <form className="project-editor-form" onSubmit={save}><div className="skill-editor-title">{editingId?'EDIT EDUCATION':'ADD EDUCATION'}</div>
+      <div className="editor-fields">
+        <label>INSTITUTION<input value={draft.institution} onChange={e=>update('institution',e.target.value)} placeholder="SRM University AP" required/></label>
+        <label>DEGREE<input value={draft.degree} onChange={e=>update('degree',e.target.value)} placeholder="B.Tech"/></label>
+        <label>FIELD / STREAM<input value={draft.field} onChange={e=>update('field',e.target.value)} placeholder="Computer Science & Engineering"/></label>
+        <label>GRADE / CGPA<input value={draft.grade} onChange={e=>update('grade',e.target.value)} placeholder="8.5 CGPA"/></label>
+        <label>START DATE<input type="date" value={draft.start_date} onChange={e=>update('start_date',e.target.value)}/></label>
+        <label>END DATE<input type="date" value={draft.end_date} onChange={e=>update('end_date',e.target.value)}/></label>
+        <label>DISPLAY ORDER<input type="number" min="0" value={draft.display_order} onChange={e=>update('display_order',e.target.value)}/></label>
+        <label className="full-field">DESCRIPTION<textarea rows="5" value={draft.description} onChange={e=>update('description',e.target.value)} placeholder="Relevant coursework, achievements, activities..."/></label>
+      </div>
+      <div className="skill-form-actions"><button className="admin-primary-button" disabled={saving}>{saving?'SAVING...':editingId?'UPDATE EDUCATION →':'ADD EDUCATION →'}</button>{editingId&&<button type="button" className="admin-secondary-button" onClick={reset}>CANCEL</button>}</div>
+    </form>
+    {error&&<div className="admin-error editor-message">{error}</div>}{message&&<div className="editor-success editor-message">{message}</div>}
+    <div className="projects-admin-list">{loading?<div className="editor-status">LOADING EDUCATION...</div>:items.length===0?<div className="editor-status">NO EDUCATION YET. ADD YOUR FIRST ENTRY ABOVE.</div>:items.map((item,index)=><div className="project-admin-card" key={item.id}><div className="project-admin-number">0{index+1}</div><div className="project-admin-main"><div className="project-admin-title-row"><h3>{item.degree||'Education'}</h3><span className="project-featured-badge">{item.institution}</span></div><p>{item.field||'Field not specified'}{item.grade?' • '+item.grade:''}</p><div className="project-admin-meta"><span>{item.start_date||'—'} → {item.end_date||'PRESENT'}</span><span>ORDER {item.display_order}</span></div></div><div className="project-row-actions"><button className="admin-secondary-button" onClick={()=>edit(item)}>EDIT</button><button className="admin-danger-button" onClick={()=>remove(item.id)}>DELETE</button></div></div>)}</div>
+  </div>;
+}
+
 function ExperienceEditor() {
   const emptyExperience = { company:'', role:'', location:'', start_date:'', end_date:'', description:'', technologies:'', display_order:0 };
   const [items,setItems]=useState([]);
