@@ -66,9 +66,9 @@ function ProfileEditor({ userId }) {
     <div className="editor-panel">
       <div className="editor-heading">
         <div><span className="eyebrow">01 / PROFILE</span><h2>Profile <span>Editor.</span></h2></div>
-        <div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">PUBLIC PORTFOLIO ↗</a></div>
+        <div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">PUBLIC PORTFOLIO ↗</a><button type="submit" form="profile-editor-form" className="admin-primary-button editor-save-top" disabled={saving}>{saving ? "SAVING..." : "SAVE PROFILE →"}</button></div>
       </div>
-      <form className="editor-form" onSubmit={save}>
+      <form id="profile-editor-form" className="editor-form" onSubmit={save}>
         <div className="editor-fields">
           {[['name','NAME','Your full name'],['role','ROLE','Your professional role'],['tagline','TAGLINE','Short introduction'],['location','LOCATION','City, country'],['email','PUBLIC EMAIL','Contact email'],['initials','INITIALS','e.g. ML'],['avatar_url','AVATAR URL','Optional image URL'],['resume_url','RESUME URL','Optional resume URL']].map(([field,label,placeholder]) => (
             <label key={field}>{label}<input value={profile[field] || ''} onChange={e => update(field,e.target.value)} placeholder={placeholder} /></label>
@@ -77,7 +77,7 @@ function ProfileEditor({ userId }) {
         </div>
         {error && <div className="admin-error">{error}</div>}
         {message && <div className="editor-success">{message}</div>}
-        <button className="admin-primary-button" disabled={saving}>{saving ? 'SAVING...' : 'SAVE PROFILE →'}</button>
+        <button className="admin-primary-button editor-save-bottom" disabled={saving}>{saving ? 'SAVING...' : 'SAVE PROFILE →'}</button>
       </form>
     </div>
   );
