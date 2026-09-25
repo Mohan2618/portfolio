@@ -1,197 +1,228 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
 
-// ─── NAVBAR ─────────────────────────────────────────────────────────────────
-function Navbar({ current, setPage }) {
-  const links = ['HOME', 'ABOUT', 'SKILLS', 'RESUME', 'CONTACT'];
-  return (
-    <nav className="navbar">
-      <div className="nav-logo" onClick={() => setPage('HOME')}>ML</div>
-      <div className="nav-links">
-        {links.map(l => (
-          <button
-            key={l}
-            className={`nav-btn ${current === l ? 'active' : ''}`}
-            onClick={() => setPage(l)}
-          >
-            {l}
-          </button>
-        ))}
-      </div>
-    </nav>
-  );
+const portfolio = {
+  profile: {
+    initials: 'ML',
+    name: 'Mohan Lingabathina',
+    shortName: 'MOHAN',
+    role: 'Software Engineer • AI/ML • Full Stack',
+    tagline: 'I build intelligent, practical software and turn ideas into products.',
+    about: 'Computer Science and Engineering student specializing in AI/ML at SRM University AP. I enjoy building full-stack applications, AI-powered tools, APIs, and developer-focused products.',
+    location: 'Andhra Pradesh, India'
+  },
+  skills: [
+    { name: 'Java', level: 88, group: 'Languages' },
+    { name: 'Python', level: 92, group: 'Languages' },
+    { name: 'JavaScript', level: 88, group: 'Languages' },
+    { name: 'SQL', level: 86, group: 'Languages' },
+    { name: 'React', level: 84, group: 'Frontend' },
+    { name: 'FastAPI', level: 86, group: 'Backend' },
+    { name: 'Flask', level: 84, group: 'Backend' },
+    { name: 'Node.js', level: 78, group: 'Backend' },
+    { name: 'AI / ML', level: 86, group: 'AI' },
+    { name: 'Git / GitHub', level: 90, group: 'Tools' }
+  ],
+  projects: [
+    { title: 'Lumina', type: 'AI Application', description: 'AI-powered image processing and conversational assistant built as a full-stack application.', tech: ['React', 'Flask', 'Supabase', 'AI APIs'] },
+    { title: 'ReviewRadar AI', type: 'AI / Search', description: 'Semantic review search platform using embeddings, vector search, and FastAPI.', tech: ['FastAPI', 'ChromaDB', 'Python', 'ML'] },
+    { title: 'AuraSum', type: 'NLP', description: 'Offline document summarization application using extractive and local transformer-based summarization.', tech: ['Flask', 'T5', 'NLP', 'Python'] },
+    { title: 'TestPilot', type: 'Developer Tool', description: 'A planned automated software testing platform for analyzing applications against requirements.', tech: ['FastAPI', 'React', 'Testing', 'AI'] }
+  ],
+  socials: [
+    { label: 'GitHub', href: 'https://github.com/Mohan2618' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
+    { label: 'Email', href: 'mailto:mohanlingabathina8@gmail.com' }
+  ]
+};
+
+function useTilt() {
+  const ref = useRef(null);
+  const onMove = event => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
+    el.style.setProperty('--rx', (-y * 7) + 'deg');
+    el.style.setProperty('--ry', (x * 9) + 'deg');
+    el.style.setProperty('--mx', (x * 50 + 50) + '%');
+    el.style.setProperty('--my', (y * 50 + 50) + '%');
+  };
+  const onLeave = () => {
+    if (!ref.current) return;
+    ref.current.style.setProperty('--rx', '0deg');
+    ref.current.style.setProperty('--ry', '0deg');
+    ref.current.style.setProperty('--mx', '50%');
+    ref.current.style.setProperty('--my', '50%');
+  };
+  return { ref, onMouseMove: onMove, onMouseLeave: onLeave };
 }
 
-// ─── HOME ────────────────────────────────────────────────────────────────────
-function Home({ setPage }) {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
+function TiltCard({ children, className = '' }) {
+  const tilt = useTilt();
   return (
-    <div className="page home-page">
-      <div className="home-bg">
-        <div className="grid-overlay"></div>
-        <div className="glow glow-1"></div>
-        <div className="glow glow-2"></div>
-      </div>
-      <div className={`home-content ${visible ? 'visible' : ''}`}>
-        <p className="home-greeting">Hello! I'm</p>
-        <h1 className="home-name">MOHAN<br /><span>L K</span></h1>
-        <p className="home-role">Web Developer &amp; Machine Learning Engineer</p>
-        <div className="home-btns">
-          <button className="btn-primary" onClick={() => setPage('ABOUT')}>About Me</button>
-          <button className="btn-secondary" onClick={() => setPage('CONTACT')}>Get In Touch</button>
-        </div>
-      </div>
-      <div className="home-scroll-hint">scroll ↓</div>
+    <div ref={tilt.ref} className={'tilt-card ' + className} onMouseMove={tilt.onMouseMove} onMouseLeave={tilt.onMouseLeave}>
+      <div className="tilt-shine" />
+      {children}
     </div>
   );
 }
 
-// ─── ABOUT ───────────────────────────────────────────────────────────────────
-function About() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
+function Navbar({ active, setActive }) {
+  const links = ['HOME', 'ABOUT', 'SKILLS', 'PROJECTS', 'RESUME', 'CONTACT'];
   return (
-    <div className="page about-page">
-      <div className="glow glow-1"></div>
-      <div className={`about-content ${visible ? 'visible' : ''}`}>
-        <div className="about-photo-wrap">
-          <div className="about-photo-border">
-            <img src="resumepic.jpeg" alt="Mohan" className="about-photo"
-              onError={e => { e.target.style.display='none'; }} />
-            <div className="about-photo-placeholder">ML</div>
+    <header className="navbar">
+      <button className="brand-3d" onClick={() => setActive('HOME')} aria-label="Go home"><span>ML</span></button>
+      <nav>{links.map(link => <button key={link} className={active === link ? 'nav-link active' : 'nav-link'} onClick={() => setActive(link)}>{link}</button>)}</nav>
+    </header>
+  );
+}
+
+function Hero({ setActive }) {
+  return (
+    <section className="section hero" id="HOME">
+      <div className="hero-grid" />
+      <div className="orb orb-a" />
+      <div className="orb orb-b" />
+      <div className="hero-copy">
+        <span className="eyebrow">HELLO, WORLD</span>
+        <h1>{portfolio.profile.shortName}<span>.</span></h1>
+        <div className="hero-role">{portfolio.profile.role}</div>
+        <p>{portfolio.profile.tagline}</p>
+        <div className="hero-actions">
+          <button className="button-3d primary" onClick={() => setActive('PROJECTS')}>Explore Work</button>
+          <button className="button-3d secondary" onClick={() => setActive('CONTACT')}>Let's Connect</button>
+        </div>
+      </div>
+      <TiltCard className="hero-card">
+        <div className="cube-scene"><div className="cube">
+          <span className="front">AI</span><span className="back">ML</span><span className="right">JS</span>
+          <span className="left">API</span><span className="top">DEV</span><span className="bottom">SQL</span>
+        </div></div>
+        <div className="hero-card-meta"><span>BUILDING</span><strong>Ideas → Products</strong></div>
+      </TiltCard>
+      <span className="scroll-label">SCROLL TO EXPLORE ↓</span>
+    </section>
+  );
+}
+
+function About() {
+  return (
+    <section className="section" id="ABOUT">
+      <div className="section-heading"><span className="eyebrow">01 / ABOUT</span><h2>Behind the <span>builds.</span></h2></div>
+      <div className="about-grid">
+        <TiltCard className="profile-card">
+          <div className="avatar-3d">{portfolio.profile.initials}</div>
+          <span className="status-dot">AVAILABLE FOR OPPORTUNITIES</span>
+          <h3>{portfolio.profile.name}</h3><p>{portfolio.profile.location}</p>
+        </TiltCard>
+        <div className="about-copy">
+          <p className="lead">{portfolio.profile.about}</p>
+          <div className="stats-grid">
+            <TiltCard><strong>AI</strong><span>Applied intelligence</span></TiltCard>
+            <TiltCard><strong>WEB</strong><span>Full-stack products</span></TiltCard>
+            <TiltCard><strong>API</strong><span>Backend systems</span></TiltCard>
+            <TiltCard><strong>CODE</strong><span>Problem solving</span></TiltCard>
           </div>
         </div>
-        <div className="about-text">
-          <h2 className="section-title">About <span>Me</span></h2>
-          <p>Hello! I'm <strong>Mohan Lingabathina</strong>, graduating at SRM University AP, pursuing Computer Science and Engineering.</p>
-          <p>I have a passion for learning and exploring new technologies. I enjoy understanding how websites and applications work and how ideas can be turned into real projects.</p>
-          <p>I'm interested in <strong>web development</strong> and <strong>machine learning</strong>. I love experimenting with different tools, learning new concepts, and building things that help me grow.</p>
-          <p>Apart from studies, I enjoy playing cricket, listening to music, and watching movies. I stay updated with the latest trends in tech.</p>
-          <p className="about-quote">— "Continuous learning and practice help me grow both as a student and as a developer."</p>
-        </div>
       </div>
-    </div>
+    </section>
   );
 }
 
-// ─── SKILLS ──────────────────────────────────────────────────────────────────
 function Skills() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
-
-  const areas = [
-    { title: 'Web Development', icon: '🌐', desc: 'Building responsive websites using HTML, CSS, JavaScript and React.' },
-    { title: 'Machine Learning', icon: '🤖', desc: 'Exploring ML algorithms, data analysis, and building intelligent applications.' },
-    { title: 'New Technologies', icon: '🚀', desc: 'Always learning and experimenting with latest tools and frameworks.' },
-  ];
-
-  const techs = [
-    { name: 'Java', src: 'https://toppng.com/uploads/preview/java-logo-vector-free-download-115742383154zj1d34hyu.png' },
-    { name: 'Python', src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSv8e8DY2HEtxzguVyTkNj1DmaQglni2j9SRw&s' },
-    { name: 'C++', src: 'https://cdn-icons-png.flaticon.com/512/6132/6132222.png' },
-    { name: 'HTML/CSS', src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN2Ob42L45hStICYlml7RTjH9p4q0E89vc6Q&s' },
-  ];
-
   return (
-    <div className="page skills-page">
-      <div className="glow glow-2"></div>
-      <div className={`skills-content ${visible ? 'visible' : ''}`}>
-        <h2 className="section-title">What I <span>Do</span></h2>
-        <div className="skills-cards">
-          {areas.map((a, i) => (
-            <div className="skill-card" key={i} style={{ animationDelay: `${i * 0.15}s` }}>
-              <div className="skill-icon">{a.icon}</div>
-              <h3>{a.title}</h3>
-              <p>{a.desc}</p>
-            </div>
-          ))}
-        </div>
-        <h3 className="tech-title">Technologies &amp; Languages</h3>
-        <div className="tech-icons">
-          {techs.map((t, i) => (
-            <div className="tech-item" key={i}>
-              <img src={t.src} alt={t.name} />
-              <span>{t.name}</span>
-            </div>
-          ))}
-        </div>
+    <section className="section" id="SKILLS">
+      <div className="section-heading"><span className="eyebrow">02 / SKILLS</span><h2>A stack built to <span>ship.</span></h2></div>
+      <div className="skills-grid">
+        {portfolio.skills.map(skill => (
+          <TiltCard key={skill.name} className="skill-card">
+            <div className="skill-top"><span>{skill.name}</span><small>{skill.group}</small></div>
+            <div className="skill-bar"><span style={{ width: skill.level + '%' }} /></div>
+            <strong>{skill.level}%</strong>
+          </TiltCard>
+        ))}
       </div>
-    </div>
+    </section>
   );
 }
 
-// ─── RESUME ──────────────────────────────────────────────────────────────────
+function Projects() {
+  return (
+    <section className="section" id="PROJECTS">
+      <div className="section-heading"><span className="eyebrow">03 / PROJECTS</span><h2>Things I've <span>built.</span></h2></div>
+      <div className="projects-grid">
+        {portfolio.projects.map((project, index) => (
+          <TiltCard key={project.title} className="project-card">
+            <div className="project-number">0{index + 1}</div>
+            <span className="project-type">{project.type}</span>
+            <h3>{project.title}</h3><p>{project.description}</p>
+            <div className="tags">{project.tech.map(item => <span key={item}>{item}</span>)}</div>
+            <div className="project-arrow">↗</div>
+          </TiltCard>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function Resume() {
   return (
-    <div className="page resume-page">
-      <div className="glow glow-1"></div>
-      <div className="resume-content">
-        <h2 className="section-title">My <span>Resume</span></h2>
-        <p className="resume-sub">View or download my resume below</p>
-        <div className="resume-frame-wrap">
-          <iframe
-            src="portfolio/Resume-AIML.pdf#toolbar=0&navpanes=0&scrollbar=0"
-            title="Resume"
-            className="resume-frame"
-          />
-        </div>
-        <a href="portfolio/Resume-AIML.pdf" download className="btn-primary" style={{ display: 'inline-block', marginTop: '20px' }}>
-          ⬇ Download Resume
-        </a>
+    <section className="section resume-section" id="RESUME">
+      <div className="resume-card">
+        <span className="eyebrow">04 / RESUME</span><h2>Ready to <span>connect?</span></h2>
+        <p>View the latest resume and learn more about my technical experience.</p>
+        <a className="button-3d primary" href="/portfolio/Resume-AIML.pdf" target="_blank" rel="noreferrer">View Resume ↗</a>
       </div>
-    </div>
+    </section>
   );
 }
 
-// ─── CONTACT ─────────────────────────────────────────────────────────────────
 function Contact() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => { setTimeout(() => setVisible(true), 100); }, []);
-
-  const items = [
-    { icon: '👤', label: 'Name', value: 'Mohana Lakshmi Kumar L' },
-    { icon: '📧', label: 'Email', value: 'mohanlingabathina8@gmail.com', link: 'mailto:mohanlingabathina8@gmail.com' },
-    { icon: '📞', label: 'Phone', value: '+91 7601036027', link: 'tel:+917601036027' },
-    { icon: '📍', label: 'Address', value: 'Kandukur, Nellore, Andhra Pradesh' },
-  ];
-
   return (
-    <div className="page contact-page">
-      <div className="glow glow-2"></div>
-      <div className={`contact-content ${visible ? 'visible' : ''}`}>
-        <h2 className="section-title">Get In <span>Touch</span></h2>
-        <p className="contact-sub">Feel free to reach out — I'm always open to new opportunities!</p>
-        <div className="contact-cards">
-          {items.map((item, i) => (
-            <div className="contact-card" key={i} style={{ animationDelay: `${i * 0.12}s` }}>
-              <div className="contact-icon">{item.icon}</div>
-              <div className="contact-info">
-                <span className="contact-label">{item.label}</span>
-                {item.link
-                  ? <a href={item.link} className="contact-value link">{item.value}</a>
-                  : <span className="contact-value">{item.value}</span>
-                }
-              </div>
-            </div>
-          ))}
-        </div>
+    <section className="section contact-section" id="CONTACT">
+      <div className="section-heading"><span className="eyebrow">05 / CONTACT</span><h2>Let's build something <span>useful.</span></h2></div>
+      <div className="contact-grid">
+        {portfolio.socials.map(item => (
+          <TiltCard key={item.label} className="contact-card">
+            <span className="contact-index">↗</span><small>CONNECT</small><h3>{item.label}</h3>
+            <a href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer">{item.href.replace('mailto:', '')}</a>
+          </TiltCard>
+        ))}
       </div>
-    </div>
+    </section>
   );
 }
 
-// ─── APP ROOT ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [page, setPage] = useState('HOME');
+  const [active, setActive] = useState('HOME');
 
-  const pages = { HOME: <Home setPage={setPage} />, ABOUT: <About />, SKILLS: <Skills />, RESUME: <Resume />, CONTACT: <Contact /> };
+  useEffect(() => {
+    const main = document.querySelector('.main-content');
+    const handleScroll = () => {
+      const sections = [...document.querySelectorAll('.section')];
+      const current = sections.reduce((closest, section) => {
+        const distance = Math.abs(section.getBoundingClientRect().top - 100);
+        return distance < closest.distance ? { id: section.id, distance } : closest;
+      }, { id: 'HOME', distance: Infinity });
+      setActive(current.id);
+    };
+    main?.addEventListener('scroll', handleScroll);
+    return () => main?.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const goTo = id => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    setActive(id);
+  };
 
   return (
     <div className="app">
-      <Navbar current={page} setPage={setPage} />
+      <Navbar active={active} setActive={goTo} />
       <main className="main-content">
-        {pages[page]}
+        <Hero setActive={goTo} /><About /><Skills /><Projects /><Resume /><Contact />
+        <footer>MOHAN LINGABATHINA <span>•</span> BUILT WITH REACT</footer>
       </main>
     </div>
   );
