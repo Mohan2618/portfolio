@@ -70,6 +70,8 @@ function Experience({ experience }) {
 
 function Education({ education }) { return <section className="section" id="EDUCATION"><div className="section-heading"><span className="eyebrow">05 / EDUCATION</span><h2>My <span>foundation.</span></h2></div><div className="experience-grid">{education.map((item,index)=><TiltCard key={item.id||index} className="experience-card"><div className="experience-top"><div><div className="experience-company">{item.institution}</div><h3 className="experience-role">{item.degree}</h3></div><span className="experience-date">{item.startDate||'—'} → {item.endDate||'PRESENT'}</span></div><div className="experience-location">{item.field}{item.grade?' • '+item.grade:''}</div><p className="experience-description">{item.description}</p></TiltCard>)}</div></section>; }
 
+function Certifications({ certifications }) { return <section className="section" id="CERTIFICATIONS"><div className="section-heading"><span className="eyebrow">06 / CERTIFICATIONS</span><h2>Proof of <span>learning.</span></h2></div><div className="experience-grid">{certifications.map((item,index)=><TiltCard key={item.id||index} className="experience-card"><div className="experience-top"><div><div className="experience-company">{item.issuer}</div><h3 className="experience-role">{item.name}</h3></div><span className="experience-date">{item.issueDate||'—'}</span></div><p className="experience-description">{item.description}</p>{item.credentialUrl&&<a className="button-3d secondary" href={item.credentialUrl} target="_blank" rel="noreferrer">VERIFY CREDENTIAL ↗</a>}</TiltCard>)}</div></section>; }
+
 function Resume({ portfolio }) {
   return <section className="section resume-section" id="RESUME"><div className="resume-card"><span className="eyebrow">04 / RESUME</span><h2>Ready to <span>connect?</span></h2><p>View the latest resume and learn more about my technical experience.</p><a className="button-3d primary" href={portfolio.profile.resumeUrl || "/portfolio/Resume-AIML.pdf"} target="_blank" rel="noreferrer">View Resume ↗</a></div></section>;
 }
@@ -79,16 +81,17 @@ function Contact({ portfolio }) {
 }
 
 async function loadPortfolio() {
-  const [ { data: profile, error: profileError }, { data: skills, error: skillsError }, { data: projects, error: projectsError }, { data: experience, error: experienceError }, { data: education, error: educationError }, { data: socials, error: socialsError }, { data: settings, error: settingsError } ] = await Promise.all([
+  const [ { data: profile, error: profileError }, { data: skills, error: skillsError }, { data: projects, error: projectsError }, { data: experience, error: experienceError }, { data: education, error: educationError }, { data: certifications, error: certificationsError }, { data: socials, error: socialsError }, { data: settings, error: settingsError } ] = await Promise.all([
     supabase.from('profiles').select('*').limit(1).maybeSingle(),
     supabase.from('skills').select('*').order('display_order', { ascending: true }),
     supabase.from('projects').select('*').order('display_order', { ascending: true }),
     supabase.from('experience').select('*').order('display_order', { ascending: true }),
     supabase.from('education').select('*').order('display_order', { ascending: true }),
+    supabase.from('certifications').select('*').order('display_order', { ascending: true }),
     supabase.from('social_links').select('*').order('display_order', { ascending: true }),
     supabase.from('site_settings').select('*').eq('id', 1).maybeSingle()
   ]);
-  const error = profileError || skillsError || projectsError || experienceError || educationError || socialsError || settingsError;
+  const error = profileError || skillsError || projectsError || experienceError || educationError || certificationsError || socialsError || settingsError;
   if (error) throw error;
   const name = profile?.name || '';
   const firstName = name.trim().split(/\s+/)[0] || '';
@@ -98,6 +101,7 @@ async function loadPortfolio() {
     projects: (projects || []).map(item => ({ id: item.id, title: item.title, type: item.type || '', description: item.description || '', tech: item.technologies || [] })),
     experience: (experience || []).map(item => ({ id: item.id, company: item.company, role: item.role, location: item.location || '', startDate: item.start_date || '', endDate: item.end_date || '', description: item.description || '', technologies: item.technologies || [] })),
     education: (education || []).map(item => ({ id: item.id, institution: item.institution || '', degree: item.degree || '', field: item.field || '', startDate: item.start_date || '', endDate: item.end_date || '', grade: item.grade || '', description: item.description || '' })),
+    certifications: (certifications || []).map(item => ({ id: item.id, name: item.name || '', issuer: item.issuer || '', issueDate: item.issue_date || '', credentialUrl: item.credential_url || '', description: item.description || '' })),
     socials: (socials || []).map(item => ({ id: item.id, label: item.platform, href: item.url })),
     settings: { heroBadge: settings?.hero_badge || 'HELLO, WORLD', footerText: settings?.footer_text || 'BUILT WITH REACT', contactMessage: settings?.contact_message || "Let's build something useful." }
   };
@@ -131,7 +135,7 @@ function PublicPortfolio() {
   if (loading) return <div className="app"><main className="main-content"><section className="section hero"><div className="hero-grid" /><div className="hero-copy"><span className="eyebrow">LOADING PORTFOLIO</span><h1>MOHAN<span>.</span></h1><p>Loading portfolio data from Supabase...</p></div></section></main></div>;
   if (error) return <div className="app"><main className="main-content"><section className="section hero"><div className="hero-copy"><span className="eyebrow">DATABASE ERROR</span><h1>PORTFOLIO<span>.</span></h1><p>{error}</p><button className="button-3d primary" onClick={() => window.location.reload()}>Retry</button></div></section></main></div>;
 
-  return <div className="app"><Navbar active={active} setActive={goTo} /><main className="main-content"><Hero portfolio={portfolio} setActive={goTo} /><About portfolio={portfolio} /><Skills skills={portfolio.skills} /><Projects projects={portfolio.projects} /><Experience experience={portfolio.experience} /><Education education={portfolio.education} /><Resume portfolio={portfolio} /><Contact portfolio={portfolio} /><footer>{portfolio.profile.name.toUpperCase()} <span>•</span> {portfolio.settings.footerText}</footer></main></div>;
+  return <div className="app"><Navbar active={active} setActive={goTo} /><main className="main-content"><Hero portfolio={portfolio} setActive={goTo} /><About portfolio={portfolio} /><Skills skills={portfolio.skills} /><Projects projects={portfolio.projects} /><Experience experience={portfolio.experience} /><Education education={portfolio.education} /><Certifications certifications={portfolio.certifications} /><Resume portfolio={portfolio} /><Contact portfolio={portfolio} /><footer>{portfolio.profile.name.toUpperCase()} <span>•</span> {portfolio.settings.footerText}</footer></main></div>;
 }
 
 export default function App() {
