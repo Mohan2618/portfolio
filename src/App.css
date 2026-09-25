@@ -355,3 +355,33 @@ body{overflow:hidden;background:var(--bg)}
 .projects-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.project-card{padding:30px;min-height:260px}.project-number{font-size:10px;color:var(--cyan);margin-bottom:25px}.project-card h3{font:700 30px Arial;margin:10px 0}.project-card p{color:var(--muted);font-size:12px;line-height:1.7}.tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:22px}.tags span{font-size:8px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;color:#c6ccdc}.project-arrow{position:absolute;right:25px;bottom:22px;color:var(--cyan);font-size:22px}
 .resume-section{align-items:center;text-align:center}.resume-card{width:min(850px,100%);padding:70px 45px;border:1px solid var(--line);border-radius:30px;background:linear-gradient(145deg,rgba(255,255,255,.07),rgba(255,255,255,.015));box-shadow:30px 40px 100px rgba(0,0,0,.4)}.resume-card p{color:var(--muted);font-size:13px;margin:25px auto 30px;max-width:520px;line-height:1.8}.contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.contact-card{padding:28px;min-height:190px}.contact-index{float:right;color:var(--cyan)}.contact-card small{font-size:8px;color:var(--muted);letter-spacing:2px}.contact-card h3{font:700 28px Arial;margin:35px 0 10px}.contact-card a{color:var(--cyan);font-size:10px;text-decoration:none;word-break:break-all}footer{padding:35px;text-align:center;color:var(--muted);font-size:9px;letter-spacing:2px}
 @media(max-width:800px){.navbar{top:10px}.nav-links{overflow-x:auto;max-width:calc(100vw - 80px)}.nav-btn{font-size:8px;padding:9px 7px}.section{padding:120px 20px 70px}.hero{grid-template-columns:1fr}.hero h1{letter-spacing:-4px}.hero-card{display:none}.about-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}.skills-grid,.projects-grid,.contact-grid{grid-template-columns:1fr}.scroll-label{display:none}}
+
+
+.admin-shell{min-height:100vh;background:#05060a;color:var(--text);position:relative;overflow:hidden;font-family:var(--font-head)}
+.admin-bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.admin-glow{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
+.admin-glow-a{width:420px;height:420px;left:-140px;top:10%;background:rgba(82,230,255,.12)}
+.admin-glow-b{width:420px;height:420px;right:-140px;bottom:-100px;background:rgba(155,108,255,.12)}
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;position:relative;z-index:1}
+.login-card{width:min(440px,100%);padding:42px;border:1px solid var(--line);border-radius:28px;background:rgba(15,18,28,.78);backdrop-filter:blur(20px);box-shadow:0 30px 100px rgba(0,0,0,.45);transform:perspective(1000px) rotateX(1deg)}
+.login-card h1,.admin-header h1,.admin-loading h1{font-size:clamp(42px,7vw,72px);line-height:1;margin:12px 0}.login-card h1 span,.admin-header h1 span,.admin-loading h1 span{color:var(--cyan)}
+.admin-muted{color:var(--muted);margin-bottom:28px}
+.admin-form{display:grid;gap:18px}.admin-form label{display:grid;gap:8px;font:10px var(--font-mono);letter-spacing:1.5px;color:var(--muted)}
+.admin-form input{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.04);color:var(--text);outline:none;font:14px var(--font-mono)}
+.admin-form input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(82,230,255,.08)}
+.admin-primary-button,.admin-secondary-button,.admin-edit-button{border:1px solid var(--line);border-radius:12px;padding:13px 16px;font:11px var(--font-mono);letter-spacing:1px;cursor:pointer;text-decoration:none}
+.admin-primary-button{background:var(--cyan);color:#05060a;border-color:var(--cyan);font-weight:800;margin-top:4px}.admin-primary-button:disabled{opacity:.6;cursor:wait}
+.admin-secondary-button,.admin-edit-button{background:rgba(255,255,255,.04);color:var(--text)}
+.admin-secondary-button:hover,.admin-edit-button:hover{border-color:var(--cyan);color:var(--cyan)}
+.admin-back-link{display:inline-block;margin-top:24px;color:var(--muted);font:11px var(--font-mono);text-decoration:none}.admin-back-link:hover{color:var(--cyan)}
+.admin-error{padding:12px;border:1px solid rgba(255,90,90,.3);border-radius:10px;background:rgba(255,70,70,.07);color:#ff9a9a;font:12px var(--font-mono)}
+.admin-header{position:relative;z-index:1;width:min(1200px,calc(100% - 48px));margin:0 auto;padding:48px 0 24px;display:flex;align-items:flex-end;justify-content:space-between;gap:24px}
+.admin-header-actions{display:flex;gap:10px}.admin-content{position:relative;z-index:1;width:min(1200px,calc(100% - 48px));margin:0 auto;padding:20px 0 60px}
+.admin-welcome{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 20px;margin-bottom:20px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025)}
+.admin-welcome div{display:grid;gap:5px}.admin-label{font:9px var(--font-mono);letter-spacing:1.5px;color:var(--muted)}.admin-welcome strong{font:13px var(--font-mono)}
+.admin-badge{font:10px var(--font-mono);letter-spacing:1px;color:var(--cyan)}
+.admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.admin-section-card{min-height:230px;padding:22px;border:1px solid var(--line);border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.055),rgba(255,255,255,.015));box-shadow:0 18px 45px rgba(0,0,0,.2);transition:transform .25s,border-color .25s;position:relative;overflow:hidden}
+.admin-section-card:hover{transform:translateY(-5px) rotateX(2deg) rotateY(-2deg);border-color:rgba(82,230,255,.45)}.admin-card-number{font:12px var(--font-mono);color:var(--cyan);display:block;margin-bottom:26px}.admin-section-card h2{font-size:20px;margin:8px 0}.admin-section-card p{color:var(--muted);font-size:13px;line-height:1.6;min-height:62px}.admin-edit-button{margin-top:12px;font-size:9px;width:100%}
+.admin-loading{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1;text-align:center;padding:24px}.admin-loading p{max-width:500px}
+@media(max-width:900px){.admin-grid{grid-template-columns:repeat(2,1fr)}.admin-header{align-items:flex-start;flex-direction:column}.admin-header-actions{width:100%}.admin-secondary-button{flex:1;text-align:center}}
+@media(max-width:600px){.admin-grid{grid-template-columns:1fr}.login-card{padding:28px}.admin-header,.admin-content{width:min(100% - 28px,1200px)}.admin-welcome{align-items:flex-start;flex-direction:column}}
