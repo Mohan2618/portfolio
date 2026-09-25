@@ -40,7 +40,7 @@ function TiltCard({ children, className = '' }) {
 
 function Navbar({ active, setActive }) {
   const links = ['HOME', 'ABOUT', 'SKILLS', 'PROJECTS', 'EXPERIENCE', 'EDUCATION', 'CERTIFICATIONS', 'RESUME', 'CONTACT'];
-  return <header className="navbar"><button className="brand-3d" onClick={() => setActive('HOME')} aria-label="Go home"><span>ML</span></button><nav>{links.map(link => <button key={link} className={active === link ? 'nav-link active' : 'nav-link'} onClick={() => setActive(link)}>{link}</button>)}</nav></header>;
+  return <header className="navbar"><button className="brand-3d" onClick={() => setActive('HOME')} aria-label="Go home"><span>ML</span></button><nav>{links.map(link => <button key={link} className={active === link ? 'nav-link active' : 'nav-link'} onClick={() => setActive(link)}>{link}</button>)}<button type="button" className="nav-link admin-nav-link" onClick={() => window.location.assign('/?admin=login')}>ADMIN</button></nav></header>;
 }
 
 function Hero({ portfolio, setActive }) {
@@ -139,5 +139,8 @@ function PublicPortfolio() {
 }
 
 export default function App() {
+  const adminRoute = new URLSearchParams(window.location.search).get('admin');
+  if (adminRoute === 'login') return <Login />;
+  if (adminRoute === 'dashboard') return <Admin />;
   return <PublicPortfolio />;
 }
