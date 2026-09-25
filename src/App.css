@@ -422,3 +422,20 @@ body{overflow:hidden;background:var(--bg)}
 
 .editor-save-top{margin:0;padding:11px 14px;white-space:nowrap}.editor-save-bottom{display:none}.editor-heading-actions{position:sticky;top:0;z-index:5;background:rgba(12,15,23,.96);padding:6px;border-radius:14px}
 @media(max-width:600px){.editor-save-top{font-size:9px;padding:10px}.editor-heading-actions{width:100%;justify-content:flex-start}}
+\n
+.skill-editor-form{display:grid;gap:18px;margin-top:24px;padding:20px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.025);box-shadow:inset 0 1px rgba(255,255,255,.03);transform:perspective(1200px) rotateX(.4deg)}
+.skill-editor-title{font:10px var(--font-mono);letter-spacing:2px;color:var(--cyan)}
+.skill-form-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.editor-message{margin-top:14px}
+.skills-admin-list{display:grid;gap:8px;margin-top:22px}
+.skills-admin-list-head,.skill-admin-row{display:grid;grid-template-columns:minmax(150px,1.5fr) minmax(110px,1fr) 80px 70px minmax(150px,.9fr);gap:12px;align-items:center}
+.skills-admin-list-head{padding:0 14px 8px;color:var(--muted);font:9px var(--font-mono);letter-spacing:1.2px}
+.skill-admin-row{padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.025);transition:.2s;transform:perspective(900px) rotateX(.5deg)}
+.skill-admin-row:hover{border-color:rgba(82,230,255,.3);transform:perspective(900px) rotateX(.5deg) translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.18)}
+.skill-admin-row strong{font:12px var(--font-mono);color:var(--text)}
+.skill-admin-row>span{font:10px var(--font-mono);color:var(--muted)}
+.skill-row-actions{display:flex;gap:7px;justify-content:flex-end}
+.admin-danger-button{padding:10px 12px;border:1px solid rgba(255,90,110,.35);border-radius:10px;background:rgba(255,90,110,.06);color:#ff8d9d;font:9px var(--font-mono);letter-spacing:1px;cursor:pointer;transition:.2s}
+.admin-danger-button:hover{border-color:rgba(255,90,110,.7);background:rgba(255,90,110,.12);transform:translateY(-1px)}
+@media(max-width:900px){.skills-admin-list-head{display:none}.skill-admin-row{grid-template-columns:1fr 1fr;gap:10px}.skill-admin-row strong{grid-column:1/-1}.skill-row-actions{grid-column:1/-1;justify-content:flex-start}}
+@media(max-width:600px){.skill-admin-row{grid-template-columns:1fr 1fr}.skill-form-actions .admin-primary-button,.skill-form-actions .admin-secondary-button{width:100%}}
