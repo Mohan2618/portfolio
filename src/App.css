@@ -439,3 +439,88 @@ body{overflow:hidden;background:var(--bg)}
 .admin-danger-button:hover{border-color:rgba(255,90,110,.7);background:rgba(255,90,110,.12);transform:translateY(-1px)}
 @media(max-width:900px){.skills-admin-list-head{display:none}.skill-admin-row{grid-template-columns:1fr 1fr;gap:10px}.skill-admin-row strong{grid-column:1/-1}.skill-row-actions{grid-column:1/-1;justify-content:flex-start}}
 @media(max-width:600px){.skill-admin-row{grid-template-columns:1fr 1fr}.skill-form-actions .admin-primary-button,.skill-form-actions .admin-secondary-button{width:100%}}
+\n
+/* ADMIN VIEWPORT + SKILLS RESPONSIVE FIX */
+.admin-shell.admin-app{
+  height:100vh;
+  min-height:0;
+  overflow-x:hidden;
+  overflow-y:auto;
+  padding-bottom:100px;
+  -webkit-overflow-scrolling:touch;
+}
+.admin-app .admin-layout{
+  width:min(1400px,calc(100% - 48px));
+  max-width:100%;
+  min-width:0;
+  padding-bottom:100px;
+}
+.admin-app .admin-editor-area,
+.admin-app .editor-panel{
+  min-width:0;
+  max-width:100%;
+}
+.admin-app .editor-panel{
+  overflow:visible;
+}
+.skills-admin-list{
+  width:100%;
+  min-width:0;
+  overflow:visible;
+}
+.skill-admin-row,
+.skills-admin-list-head{
+  min-width:0;
+  max-width:100%;
+}
+.skill-admin-row>*{
+  min-width:0;
+}
+.skill-admin-row>span,
+.skill-admin-row strong{
+  overflow-wrap:anywhere;
+}
+.skill-row-actions{
+  min-width:0;
+  flex-wrap:wrap;
+}
+@media(max-width:1050px){
+  .skills-admin-list-head,.skill-admin-row{
+    grid-template-columns:minmax(130px,1.3fr) minmax(100px,1fr) 70px 60px minmax(125px,.8fr);
+    gap:8px;
+  }
+}
+@media(max-width:900px){
+  .admin-shell.admin-app{padding-bottom:90px}
+  .admin-app .admin-layout{width:min(100% - 32px,1400px);padding-bottom:80px}
+  .skills-admin-list-head{display:none}
+  .skill-admin-row{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:10px;
+    padding:16px;
+  }
+  .skill-admin-row strong{
+    grid-column:1/-1;
+    font-size:13px;
+  }
+  .skill-admin-row>span{
+    padding:9px 10px;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:rgba(255,255,255,.025);
+  }
+  .skill-row-actions{
+    grid-column:1/-1;
+    justify-content:flex-start;
+  }
+}
+@media(max-width:600px){
+  .admin-shell.admin-app{padding-bottom:80px}
+  .admin-app .admin-layout{width:calc(100% - 20px);padding-bottom:70px}
+  .editor-panel,.editor-placeholder{width:100%;max-width:100%;overflow:visible}
+  .skill-editor-form{padding:16px}
+  .skill-admin-row{grid-template-columns:1fr;padding:14px}
+  .skill-admin-row strong,.skill-row-actions{grid-column:auto}
+  .skill-row-actions{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .skill-row-actions .admin-secondary-button,.skill-row-actions .admin-danger-button{width:100%}
+}
