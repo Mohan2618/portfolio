@@ -2,7 +2,6 @@
   "name": "portfolio",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://Mohan2618.github.io/portfolio",
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
     "react": "^18.2.0",
