@@ -524,7 +524,7 @@ function Admin() {
   return (
     <div className="admin-shell admin-app">
       <div className="admin-bg-grid" /><div className="admin-glow admin-glow-a" /><div className="admin-glow admin-glow-b" />
-      <header className="admin-header"><div><span className="eyebrow">CONTROL CENTER</span><h1>PORTFOLIO<span>.</span></h1></div><div className="admin-header-actions"><a href="/" className="admin-secondary-button">VIEW SITE ↗</a><button onClick={signOut} className="admin-secondary-button">SIGN OUT</button></div></header>
+      <header className="admin-header"><div><span className="eyebrow">CONTROL CENTER • BUILD 700A98A</span><h1>PORTFOLIO<span>.</span></h1></div><div className="admin-header-actions"><a href="/" className="admin-secondary-button">VIEW SITE ↗</a><button onClick={signOut} className="admin-secondary-button">SIGN OUT</button></div></header>
       <main className="admin-layout">
         <aside className="admin-sidebar">
           <div className="admin-user"><span className="admin-label">SIGNED IN AS</span><strong>{user?.email}</strong><span className="admin-badge">● ADMIN ACCESS</span></div>
