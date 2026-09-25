@@ -207,6 +207,65 @@ function SkillsEditor() {
 }
 
 
+
+function ExperienceEditor() {
+  const emptyExperience = { company:'', role:'', location:'', start_date:'', end_date:'', description:'', technologies:'', display_order:0 };
+  const [items,setItems]=useState([]);
+  const [draft,setDraft]=useState(emptyExperience);
+  const [editingId,setEditingId]=useState(null);
+  const [loading,setLoading]=useState(true);
+  const [saving,setSaving]=useState(false);
+  const [message,setMessage]=useState('');
+  const [error,setError]=useState('');
+
+  const load=async()=>{
+    setLoading(true); setError('');
+    const {data,error:e}=await supabase.from('experience').select('*').order('display_order',{ascending:true}).order('id',{ascending:true});
+    if(e)setError(e.message); else setItems(data||[]);
+    setLoading(false);
+  };
+  useEffect(()=>{load();},[]);
+  const update=(field,value)=>setDraft(d=>({...d,[field]:value}));
+  const reset=()=>{setDraft({...emptyExperience,display_order:items.length});setEditingId(null);setMessage('');setError('');};
+  const save=async e=>{
+    e.preventDefault(); setSaving(true);setMessage('');setError('');
+    const payload={
+      company:draft.company.trim(),role:draft.role.trim(),location:draft.location.trim(),
+      start_date:draft.start_date||null,end_date:draft.end_date||null,
+      description:draft.description.trim(),
+      technologies:draft.technologies.split(',').map(x=>x.trim()).filter(Boolean),
+      display_order:Math.max(0,Number(draft.display_order)||0)
+    };
+    if(!payload.company||!payload.role){setError('Company and role are required.');setSaving(false);return;}
+    const query=editingId?supabase.from('experience').update(payload).eq('id',editingId).select('*').single():supabase.from('experience').insert(payload).select('*').single();
+    const {data,error:e}=await query;
+    if(e)setError(e.message);
+    else{setItems(cur=>(editingId?cur.map(x=>x.id===editingId?data:x):[...cur,data]).sort((a,b)=>(a.display_order-b.display_order)||(a.id-b.id)));setMessage(editingId?'Experience updated successfully.':'Experience added successfully.');reset();}
+    setSaving(false);
+  };
+  const edit=item=>{setEditingId(item.id);setDraft({company:item.company||'',role:item.role||'',location:item.location||'',start_date:item.start_date||'',end_date:item.end_date||'',description:item.description||'',technologies:Array.isArray(item.technologies)?item.technologies.join(', '):'',display_order:item.display_order??0});setMessage('');setError('');};
+  const remove=async id=>{if(!window.confirm('Delete this experience entry?'))return;const {error:e}=await supabase.from('experience').delete().eq('id',id);if(e)setError(e.message);else{setItems(cur=>cur.filter(x=>x.id!==id));setMessage('Experience deleted successfully.');if(editingId===id)reset();}};
+  return <div className="editor-panel">
+    <div className="editor-heading"><div><span className="eyebrow">04 / EXPERIENCE</span><h2>Experience <span>Editor.</span></h2></div><div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">PUBLIC PORTFOLIO ↗</a></div></div>
+    <form className="project-editor-form" onSubmit={save}>
+      <div className="skill-editor-title">{editingId?'EDIT EXPERIENCE':'ADD EXPERIENCE'}</div>
+      <div className="editor-fields">
+        <label>COMPANY<input value={draft.company} onChange={e=>update('company',e.target.value)} placeholder="Company name" required/></label>
+        <label>ROLE<input value={draft.role} onChange={e=>update('role',e.target.value)} placeholder="Software Engineer" required/></label>
+        <label>LOCATION<input value={draft.location} onChange={e=>update('location',e.target.value)} placeholder="Hyderabad, India"/></label>
+        <label>DISPLAY ORDER<input type="number" min="0" value={draft.display_order} onChange={e=>update('display_order',e.target.value)}/></label>
+        <label>START DATE<input type="date" value={draft.start_date} onChange={e=>update('start_date',e.target.value)}/></label>
+        <label>END DATE<input type="date" value={draft.end_date} onChange={e=>update('end_date',e.target.value)}/></label>
+        <label className="full-field">TECHNOLOGIES<input value={draft.technologies} onChange={e=>update('technologies',e.target.value)} placeholder="Java, Spring, React"/></label>
+        <label className="full-field">DESCRIPTION<textarea rows="5" value={draft.description} onChange={e=>update('description',e.target.value)} placeholder="Describe your responsibilities and achievements..."/></label>
+      </div>
+      <div className="skill-form-actions"><button className="admin-primary-button" disabled={saving}>{saving?'SAVING...':editingId?'UPDATE EXPERIENCE →':'ADD EXPERIENCE →'}</button>{editingId&&<button type="button" className="admin-secondary-button" onClick={reset}>CANCEL</button>}</div>
+    </form>
+    {error&&<div className="admin-error editor-message">{error}</div>}{message&&<div className="editor-success editor-message">{message}</div>}
+    <div className="projects-admin-list">{loading?<div className="editor-status">LOADING EXPERIENCE...</div>:items.length===0?<div className="editor-status">NO EXPERIENCE YET. ADD YOUR FIRST ENTRY ABOVE.</div>:items.map((item,index)=><div className="project-admin-card" key={item.id}><div className="project-admin-number">0{index+1}</div><div className="project-admin-main"><div className="project-admin-title-row"><h3>{item.role}</h3><span className="project-featured-badge">{item.company}</span></div><p>{item.description||'No description added.'}</p><div className="project-admin-meta"><span>{item.location||'LOCATION NOT SET'}</span><span>{item.start_date||'—'} → {item.end_date||'PRESENT'}</span><span>{Array.isArray(item.technologies)&&item.technologies.length?item.technologies.join(' · '):'NO TECHNOLOGIES'}</span></div></div><div className="project-row-actions"><button className="admin-secondary-button" onClick={()=>edit(item)}>EDIT</button><button className="admin-danger-button" onClick={()=>remove(item.id)}>DELETE</button></div></div>)}</div>
+  </div>;
+}
+
 function ProjectsEditor() {
   const emptyProject = { title: '', description: '', image_url: '', github_url: '', live_url: '', technologies: '', featured: false, display_order: 0 };
   const [projects, setProjects] = useState([]);
@@ -405,7 +464,7 @@ export default function Admin() {
           </nav>
         </aside>
         <section className="admin-editor-area">
-          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : selected === 'SKILLS' ? <SkillsEditor /> : selected === 'PROJECTS' ? <ProjectsEditor /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
+          {selected === 'PROFILE' ? <ProfileEditor userId={user.id} /> : selected === 'SKILLS' ? <SkillsEditor /> : selected === 'PROJECTS' ? <ProjectsEditor /> : selected === 'EXPERIENCE' ? <ExperienceEditor /> : <div className="editor-placeholder"><span className="eyebrow">COMING NEXT</span><h2>{selected} <span>EDITOR.</span></h2><p>This section is ready for its database editor. Select Profile to test the first live editor.</p></div>}
         </section>
       </main>
     </div>
