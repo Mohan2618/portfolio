@@ -40,7 +40,7 @@ function TiltCard({ children, className = '' }) {
 
 function Navbar({ active, setActive }) {
   const links = ['HOME', 'ABOUT', 'SKILLS', 'PROJECTS', 'EXPERIENCE', 'EDUCATION', 'CERTIFICATIONS', 'RESUME', 'CONTACT'];
-  return <header className="navbar"><button className="brand-3d" onClick={() => setActive('HOME')} aria-label="Go home"><span>ML</span></button><nav>{links.map(link => <button key={link} className={active === link ? 'nav-link active' : 'nav-link'} onClick={() => setActive(link)}>{link}</button>)}<a className="nav-link admin-nav-link" href="/?admin=dashboard">ADMIN</a></nav></header>;
+  return <header className="navbar"><button className="brand-3d" onClick={() => setActive('HOME')} aria-label="Go home"><span>ML</span></button><nav>{links.map(link => <button key={link} className={active === link ? 'nav-link active' : 'nav-link'} onClick={() => setActive(link)}>{link}</button>)}<a className="nav-link admin-nav-link" href="/?admin=dashboard&section=PROFILE">ADMIN</a></nav></header>;
 }
 
 function Hero({ portfolio, setActive }) {
