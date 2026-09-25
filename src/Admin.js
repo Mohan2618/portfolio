@@ -220,15 +220,15 @@ function ExperienceEditor() {
 
   const load=async()=>{
     setLoading(true); setError('');
-    const {data,error:e}=await supabase.from('experience').select('*').order('display_order',{ascending:true}).order('id',{ascending:true});
-    if(e)setError(e.message); else setItems(data||[]);
+    const {data,error:loadError}=await supabase.from('experience').select('*').order('display_order',{ascending:true}).order('id',{ascending:true});
+    if(loadError)setError(loadError.message); else setItems(data||[]);
     setLoading(false);
   };
   useEffect(()=>{load();},[]);
   const update=(field,value)=>setDraft(d=>({...d,[field]:value}));
   const reset=()=>{setDraft({...emptyExperience,display_order:items.length});setEditingId(null);setMessage('');setError('');};
-  const save=async e=>{
-    e.preventDefault(); setSaving(true);setMessage('');setError('');
+  const save=async event=>{
+    event.preventDefault(); setSaving(true);setMessage('');setError('');
     const payload={
       company:draft.company.trim(),role:draft.role.trim(),location:draft.location.trim(),
       start_date:draft.start_date||null,end_date:draft.end_date||null,
@@ -238,13 +238,13 @@ function ExperienceEditor() {
     };
     if(!payload.company||!payload.role){setError('Company and role are required.');setSaving(false);return;}
     const query=editingId?supabase.from('experience').update(payload).eq('id',editingId).select('*').single():supabase.from('experience').insert(payload).select('*').single();
-    const {data,error:e}=await query;
-    if(e)setError(e.message);
+    const {data,error:saveError}=await query;
+    if(saveError)setError(saveError.message);
     else{setItems(cur=>(editingId?cur.map(x=>x.id===editingId?data:x):[...cur,data]).sort((a,b)=>(a.display_order-b.display_order)||(a.id-b.id)));setMessage(editingId?'Experience updated successfully.':'Experience added successfully.');reset();}
     setSaving(false);
   };
   const edit=item=>{setEditingId(item.id);setDraft({company:item.company||'',role:item.role||'',location:item.location||'',start_date:item.start_date||'',end_date:item.end_date||'',description:item.description||'',technologies:Array.isArray(item.technologies)?item.technologies.join(', '):'',display_order:item.display_order??0});setMessage('');setError('');};
-  const remove=async id=>{if(!window.confirm('Delete this experience entry?'))return;const {error:e}=await supabase.from('experience').delete().eq('id',id);if(e)setError(e.message);else{setItems(cur=>cur.filter(x=>x.id!==id));setMessage('Experience deleted successfully.');if(editingId===id)reset();}};
+  const remove=async id=>{if(!window.confirm('Delete this experience entry?'))return;const {error:deleteError}=await supabase.from('experience').delete().eq('id',id);if(deleteError)setError(deleteError.message);else{setItems(cur=>cur.filter(x=>x.id!==id));setMessage('Experience deleted successfully.');if(editingId===id)reset();}};
   return <div className="editor-panel">
     <div className="editor-heading"><div><span className="eyebrow">04 / EXPERIENCE</span><h2>Experience <span>Editor.</span></h2></div><div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">PUBLIC PORTFOLIO ↗</a></div></div>
     <form className="project-editor-form" onSubmit={save}>
