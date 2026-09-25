@@ -34,7 +34,7 @@ export default function Login() {
       return;
     }
 
-    window.location.assign('/?admin=dashboard&section=PROFILE');
+    window.location.href = '/?admin=dashboard';
   };
 
   return (
