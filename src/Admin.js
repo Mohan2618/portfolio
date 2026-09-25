@@ -507,7 +507,13 @@ function Admin() {
   const [user, setUser] = useState(null);
   const [authorized, setAuthorized] = useState(false);
   const [error, setError] = useState('');
-  const [selected, setSelected] = useState(() => new URLSearchParams(window.location.search).get('section') || 'CONTROL_CENTER');
+  const [selected, setSelected] = useState('CONTROL_CENTER');
+
+  useEffect(() => {
+    const requestedSection = new URLSearchParams(window.location.search).get('section');
+    const validSections = ['PROFILE', 'SKILLS', 'PROJECTS', 'EXPERIENCE', 'EDUCATION', 'CERTIFICATIONS', 'SOCIAL LINKS', 'SITE SETTINGS'];
+    setSelected(validSections.includes(requestedSection) ? requestedSection : 'CONTROL_CENTER');
+  }, []);
 
   useEffect(() => {
     let mounted = true;
