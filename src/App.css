@@ -1432,3 +1432,11 @@ html:has(.admin-app), body:has(.admin-app), #root:has(.admin-app){
   .home-fresh-photo-ring{width:235px;height:235px}
   .home-fresh-orbit{display:none}
 }
+
+
+.project-links{position:relative;z-index:4;display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}
+.project-link{display:inline-flex;align-items:center;padding:9px 12px;border:1px solid var(--line);border-radius:9px;color:#cbd3e5;text-decoration:none;font:8px var(--font-mono);letter-spacing:1px;background:rgba(255,255,255,.035);transition:transform .2s ease,border-color .2s ease,background .2s ease}
+.project-link:hover{transform:translateY(-2px);border-color:var(--cyan);background:rgba(82,230,255,.08);color:#fff}
+.project-link-primary{color:#061017;background:var(--cyan);border-color:var(--cyan);font-weight:700}
+.project-link-primary:hover{background:#9af4ff;color:#061017}
+.project-card .tilt-shine{pointer-events:none}
