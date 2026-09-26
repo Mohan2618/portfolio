@@ -838,3 +838,77 @@ html:has(.admin-app), body:has(.admin-app), #root:has(.admin-app){
 @media(prefers-reduced-motion:reduce){
   .hero-portrait,.hero-portrait-ring{animation:none}
 }
+
+/* FINAL HOME HERO CLEANUP */
+.hero{
+  grid-template-columns:minmax(0,1.05fr) minmax(280px,.75fr);
+  gap:clamp(30px,5vw,80px);
+  padding-top:110px;
+  padding-bottom:70px;
+  isolation:isolate;
+}
+.hero-copy{
+  min-width:0;
+  max-width:760px;
+  z-index:5;
+}
+.hero-name{
+  display:block;
+  width:100%;
+  max-width:none;
+  margin:18px 0 0;
+  font-family:Arial,sans-serif;
+  font-size:clamp(48px,6.5vw,94px);
+  font-weight:800;
+  line-height:.98;
+  letter-spacing:-.045em;
+  text-transform:none;
+  color:var(--text);
+  white-space:normal;
+  overflow:visible;
+  overflow-wrap:normal;
+  word-break:normal;
+  text-shadow:0 8px 30px rgba(0,0,0,.28);
+}
+.hero-name span{color:var(--cyan);display:inline}
+.hero-role{margin-top:22px;font-size:13px;letter-spacing:1.5px}
+.hero-copy p{max-width:560px;margin:16px 0 26px;line-height:1.7}
+.hero-visual{
+  min-width:0;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  z-index:3;
+}
+.hero-portrait-wrap{
+  width:clamp(220px,27vw,330px);
+  height:clamp(290px,36vw,430px);
+  transform:none;
+}
+.hero-portrait{
+  width:82%;
+  height:88%;
+  transform:none;
+  animation:heroPortraitFloat 7s ease-in-out infinite;
+}
+.hero-portrait:hover{transform:translateY(-4px) scale(1.015)}
+.hero-portrait-ring{width:108%;height:82%}
+.hero-portrait-label{bottom:1%;font-size:7px}
+.scroll-label{z-index:5;bottom:22px}
+@media(max-width:900px){
+  .hero{grid-template-columns:1fr;justify-items:center;text-align:center;padding-top:110px;gap:28px}
+  .hero-copy{display:flex;flex-direction:column;align-items:center;max-width:760px}
+  .hero-name{font-size:clamp(44px,9vw,76px)}
+  .hero-copy p{max-width:620px}
+  .hero-visual{max-width:360px}
+  .hero-portrait-wrap{width:230px;height:290px}
+}
+@media(max-width:600px){
+  .hero{padding:105px 20px 70px;gap:18px}
+  .hero-name{font-size:clamp(38px,11vw,58px);letter-spacing:-.035em}
+  .hero-role{font-size:11px;margin-top:16px}
+  .hero-visual{max-width:280px}
+  .hero-portrait-wrap{width:205px;height:255px}
+}
