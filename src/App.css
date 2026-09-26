@@ -1014,3 +1014,51 @@ html:has(.admin-app), body:has(.admin-app), #root:has(.admin-app){
 @media(max-width:600px){
   .hero-name{font-size:clamp(28px,8vw,42px)!important}
 }
+
+/* DEFINITIVE HERO NAME OVERRIDE */
+.hero h1.hero-name,
+.hero h1.hero-name::before,
+.hero h1.hero-name::after{
+  all:unset;
+  display:block;
+  box-sizing:border-box;
+  position:relative;
+}
+.hero h1.hero-name{
+  width:fit-content;
+  max-width:100%;
+  margin:14px 0 18px;
+  font-family:Arial,sans-serif;
+  font-size:clamp(30px,3.6vw,52px);
+  font-weight:700;
+  line-height:1.12;
+  letter-spacing:-.02em;
+  color:#f4f7ff;
+  white-space:normal;
+  overflow:visible;
+  overflow-wrap:break-word;
+  word-break:normal;
+  background:none;
+  background-color:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  text-shadow:none;
+  -webkit-text-fill-color:#f4f7ff;
+  -webkit-background-clip:initial;
+  background-clip:initial;
+}
+.hero h1.hero-name span{
+  display:inline;
+  margin:0;
+  padding:0;
+  color:var(--cyan);
+  background:none;
+  background-color:transparent;
+  border:0;
+  box-shadow:none;
+  -webkit-text-fill-color:var(--cyan);
+}
+@media(max-width:600px){
+  .hero h1.hero-name{font-size:clamp(27px,7.5vw,40px)}
+}
