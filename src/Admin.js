@@ -131,11 +131,82 @@ function CollectionEditor({ section }) {
 
 function ProfileEditor({ userId }) {
   const empty = { name: '', role: '', tagline: '', about: '', location: '', initials: '', avatar_url: '', resume_url: '', email: '' };
-  const [draft, setDraft] = useState(empty); const [loading, setLoading] = useState(true); const [busy, setBusy] = useState(false); const [message, setMessage] = useState(''); const [error, setError] = useState('');
-  useEffect(() => { supabase.from('profiles').select('*').limit(1).maybeSingle().then(({ data, error: e }) => { if (e) setError(e.message); else if (data) setDraft({ ...empty, ...data }); setLoading(false); }); }, []);
-  const save = async e => { e.preventDefault(); setBusy(true); setError(''); const { error: e2 } = await supabase.from('profiles').update({ ...draft, id: userId, name: draft.name.trim() }).eq('id', userId); if (e2) setError(e2.message); else setMessage('Profile saved successfully.'); setBusy(false); };
+  const [draft, setDraft] = useState(empty);
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    supabase.from('profiles').select('*').limit(1).maybeSingle().then(({ data, error: e }) => {
+      if (e) setError(e.message);
+      else if (data) setDraft({ ...empty, ...data });
+      setLoading(false);
+    });
+  }, []);
+
+  const save = async e => {
+    e.preventDefault();
+    setBusy(true);
+    setError('');
+    setMessage('');
+    const { error: e2 } = await supabase.from('profiles').update({ ...draft, id: userId, name: draft.name.trim() }).eq('id', userId);
+    if (e2) setError(e2.message);
+    else setMessage('Profile saved successfully.');
+    setBusy(false);
+  };
+
+  const uploadImage = async event => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError('');
+    setMessage('');
+    try {
+      if (!file.type.startsWith('image/')) throw new Error('Please select an image file.');
+      if (file.size > 5 * 1024 * 1024) throw new Error('Image must be 5 MB or smaller.');
+      const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const path = userId + '/profile-' + Date.now() + '.' + extension;
+      const { error: uploadError } = await supabase.storage.from('profile-images').upload(path, file, { cacheControl: '3600', upsert: true });
+      if (uploadError) throw uploadError;
+      const { data } = supabase.storage.from('profile-images').getPublicUrl(path);
+      if (!data?.publicUrl) throw new Error('Could not create a public image URL.');
+      const { error: updateError } = await supabase.from('profiles').update({ avatar_url: data.publicUrl }).eq('id', userId);
+      if (updateError) throw updateError;
+      setDraft(d => ({ ...d, avatar_url: data.publicUrl }));
+      setMessage('Profile image uploaded successfully.');
+    } catch (e) {
+      setError(e.message || 'Image upload failed.');
+    } finally {
+      setUploading(false);
+      event.target.value = '';
+    }
+  };
+
   if (loading) return <div className="editor-panel editor-status">LOADING PROFILE...</div>;
-  return <div className="editor-panel"><div className="editor-heading"><div><span className="eyebrow">01 / PROFILE</span><h2>Profile <span>Editor.</span></h2></div><div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">VIEW SITE ↗</a></div></div><form className="project-editor-form" onSubmit={save}><div className="editor-fields">{['name','role','tagline','location','email','initials','avatar_url','resume_url'].map(f => <Field key={f} name={f} value={draft[f] || ''} onChange={v => setDraft(d => ({ ...d, [f]: v }))} />)}<Field name="about" value={draft.about || ''} onChange={v => setDraft(d => ({ ...d, about: v }))} /></div>{error && <div className="admin-error">{error}</div>}{message && <div className="editor-success">{message}</div>}<button className="admin-primary-button" disabled={busy}>{busy ? 'SAVING...' : 'SAVE PROFILE →'}</button></form></div>;
+
+  return <div className="editor-panel">
+    <div className="editor-heading">
+      <div><span className="eyebrow">01 / PROFILE</span><h2>Profile <span>Editor.</span></h2></div>
+      <div className="editor-heading-actions"><span className="editor-live">● LIVE DATA</span><a href="/" className="admin-secondary-button">VIEW SITE ↗</a></div>
+    </div>
+    <div className="profile-image-upload">
+      <div className="profile-image-preview">{draft.avatar_url ? <img src={draft.avatar_url} alt="Profile preview" /> : <span>{draft.initials || 'ML'}</span>}</div>
+      <div className="profile-image-upload-copy">
+        <span className="skill-editor-title">PROFILE IMAGE</span>
+        <p>Upload a clear portrait. It will appear in the center of the Home section and in About.</p>
+        <label className="admin-secondary-button upload-image-button">{uploading ? 'UPLOADING...' : 'UPLOAD PROFILE IMAGE'}<input type="file" accept="image/png,image/jpeg,image/webp" onChange={uploadImage} disabled={uploading} /></label>
+        <small>PNG, JPG or WEBP • maximum 5 MB</small>
+      </div>
+    </div>
+    <form className="project-editor-form" onSubmit={save}>
+      <div className="editor-fields">{['name','role','tagline','location','email','initials','resume_url'].map(f => <Field key={f} name={f} value={draft[f] || ''} onChange={v => setDraft(d => ({ ...d, [f]: v }))} />)}<Field name="avatar_url" value={draft.avatar_url || ''} onChange={v => setDraft(d => ({ ...d, avatar_url: v }))} /><Field name="about" value={draft.about || ''} onChange={v => setDraft(d => ({ ...d, about: v }))} /></div>
+      {error && <div className="admin-error">{error}</div>}
+      {message && <div className="editor-success">{message}</div>}
+      <button className="admin-primary-button" disabled={busy}>{busy ? 'SAVING...' : 'SAVE PROFILE →'}</button>
+    </form>
+  </div>;
 }
 
 function SettingsEditor() {
