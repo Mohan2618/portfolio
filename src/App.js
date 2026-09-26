@@ -44,32 +44,31 @@ function Navbar({ active, setActive }) {
 }
 
 function Hero({ portfolio, setActive }) {
-  return <section className="section hero" id="HOME">
-    <div className="hero-grid" />
-    <div className="orb orb-a" />
-    <div className="orb orb-b" />
-    <div className="hero-copy">
-      <span className="eyebrow">{portfolio.settings.heroBadge}</span>
-      <div className="hero-intro">
-        <span className="hero-kicker">AI / SOFTWARE ENGINEER</span>
-        <div className="hero-role">{portfolio.profile.role}</div>
+  const role = portfolio.profile.role || 'Software Engineer';
+  const tagline = portfolio.profile.tagline || 'Building practical software and AI-powered products.';
+  return <section className="home-fresh" id="HOME">
+    <div className="home-fresh-grid" />
+    <div className="home-fresh-glow home-fresh-glow-one" />
+    <div className="home-fresh-glow home-fresh-glow-two" />
+    <div className="home-fresh-content">
+      <div className="home-fresh-copy">
+        <div className="home-fresh-eyebrow">{portfolio.settings.heroBadge || 'HELLO, WORLD'}</div>
+        <div className="home-fresh-line" />
+        <div className="home-fresh-role">{role}</div>
+        <p className="home-fresh-tagline">{tagline}</p>
+        <div className="home-fresh-actions">
+          <button className="home-fresh-button home-fresh-primary" onClick={() => setActive('PROJECTS')}>Explore Work</button>
+          <button className="home-fresh-button home-fresh-secondary" onClick={() => setActive('CONTACT')}>Let's Connect</button>
+        </div>
       </div>
-      <p className="hero-tagline">{portfolio.profile.tagline}</p>
-      <div className="hero-actions">
-        <button className="button-3d primary" onClick={() => setActive('PROJECTS')}>Explore Work</button>
-        <button className="button-3d secondary" onClick={() => setActive('CONTACT')}>Let's Connect</button>
-      </div>
-    </div>
-    <div className="hero-visual">
-      <div className="hero-portrait-wrap">
-        <div className="hero-portrait-ring" />
-        <div className="hero-portrait">
+      <div className="home-fresh-photo-area">
+        <div className="home-fresh-photo">
           {portfolio.profile.avatarUrl ? <img src={portfolio.profile.avatarUrl} alt="Profile" /> : <span>{portfolio.profile.initials || 'ML'}</span>}
         </div>
-        <span className="hero-portrait-label">MOHAN • AI / SOFTWARE ENGINEER</span>
+        <div className="home-fresh-photo-caption">AI • SOFTWARE • WEB</div>
       </div>
     </div>
-    <span className="scroll-label">SCROLL TO EXPLORE ↓</span>
+    <div className="home-fresh-scroll">SCROLL TO EXPLORE ↓</div>
   </section>;
 }
 
