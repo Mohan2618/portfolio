@@ -988,3 +988,29 @@ html:has(.admin-app), body:has(.admin-app), #root:has(.admin-app){
   .hero-copy p{font-size:12px}
   .hero-portrait-wrap{width:210px;height:270px}
 }
+
+/* NAME CLEANUP */
+.hero-name{
+  font-size:clamp(32px,4vw,56px)!important;
+  line-height:1.1!important;
+  letter-spacing:-.025em!important;
+  font-weight:700!important;
+  color:#f4f7ff!important;
+  background:transparent!important;
+  background-image:none!important;
+  -webkit-background-clip:border-box!important;
+  background-clip:border-box!important;
+  -webkit-text-fill-color:#f4f7ff!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+  border:none!important;
+  padding:0!important;
+}
+.hero-name span{
+  color:var(--cyan)!important;
+  background:transparent!important;
+  -webkit-text-fill-color:var(--cyan)!important;
+}
+@media(max-width:600px){
+  .hero-name{font-size:clamp(28px,8vw,42px)!important}
+}
