@@ -39,8 +39,19 @@ function TiltCard({ children, className = '' }) {
 }
 
 function Navbar({ active, setActive }) {
+  const [menuOpen, setMenuOpen] = useState(false);
   const links = ['HOME', 'ABOUT', 'SKILLS', 'PROJECTS', 'EXPERIENCE', 'EDUCATION', 'CERTIFICATIONS', 'RESUME', 'CONTACT'];
-  return <header className="navbar"><button className="brand-3d" onClick={() => setActive('HOME')} aria-label="Go home"><span>ML</span></button><nav>{links.map(link => <button key={link} className={active === link ? 'nav-link active' : 'nav-link'} onClick={() => setActive(link)}>{link}</button>)}<button type="button" className="nav-link admin-nav-link" onClick={() => window.location.assign('/?admin=dashboard&section=CONTROL_CENTER')}>ADMIN</button></nav></header>;
+  const navigate = link => { setActive(link); setMenuOpen(false); };
+  return <header className="navbar">
+    <button className="brand-3d" onClick={() => navigate('HOME')} aria-label="Go home"><span>ML</span></button>
+    <button type="button" className={menuOpen ? 'mobile-menu-toggle open' : 'mobile-menu-toggle'} onClick={() => setMenuOpen(value => !value)} aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'} aria-expanded={menuOpen}>
+      <span /><span /><span />
+    </button>
+    <nav className={menuOpen ? 'mobile-nav-open' : ''}>
+      {links.map((link, index) => <button key={link} className={active === link ? 'nav-link active' : 'nav-link'} style={{ '--menu-index': index }} onClick={() => navigate(link)}>{link}</button>)}
+      <button type="button" className="nav-link admin-nav-link" style={{ '--menu-index': links.length }} onClick={() => window.location.assign('/?admin=dashboard&section=CONTROL_CENTER')}>ADMIN</button>
+    </nav>
+  </header>;
 }
 
 function Hero({ portfolio, setActive }) {
