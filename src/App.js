@@ -91,7 +91,7 @@ function projectType(title) {
 }
 
 function Projects({ projects }) {
-  return <section className="section" id="PROJECTS"><div className="section-heading"><span className="eyebrow">03 / PROJECTS</span><h2>Things I've <span>built.</span></h2></div><div className="projects-grid">{projects.map((project, index) => <TiltCard key={project.id || project.title} className="project-card"><div className="project-number">0{index + 1}</div><span className="project-type">{project.type || projectType(project.title)}</span><h3>{project.title}</h3><p>{project.description}</p><div className="tags">{(project.tech || []).map(item => <span key={item}>{item}</span>)}</div><div className="project-arrow">↗</div></TiltCard>)}</div></section>;
+  return <section className="section" id="PROJECTS"><div className="section-heading"><span className="eyebrow">03 / PROJECTS</span><h2>Things I've <span>built.</span></h2></div><div className="projects-grid">{projects.map((project, index) => <TiltCard key={project.id || project.title} className="project-card"><div className="project-number">0{index + 1}</div><span className="project-type">{project.type || projectType(project.title)}</span><h3>{project.title}</h3><p>{project.description}</p><div className="tags">{(project.tech || []).map(item => <span key={item}>{item}</span>)}</div><div className="project-links">{project.liveUrl && <a className="project-link project-link-primary" href={project.liveUrl} target="_blank" rel="noopener noreferrer">LIVE DEMO ↗</a>}{project.githubUrl && <a className="project-link" href={project.githubUrl} target="_blank" rel="noopener noreferrer">GITHUB ↗</a>}</div></TiltCard>)}</div></section>;
 }
 
 function Experience({ experience }) {
@@ -128,7 +128,7 @@ async function loadPortfolio() {
   return {
     profile: { initials: profile?.initials || 'ML', name, shortName: name.toUpperCase() || firstName.toUpperCase(), role: profile?.role || '', tagline: profile?.tagline || '', about: profile?.about || '', location: profile?.location || '', avatarUrl: profile?.avatar_url || '', resumeUrl: profile?.resume_url || '', email: profile?.email || '' },
     skills: (skills || []).map(item => ({ id: item.id, name: item.name, level: item.level ?? 0, group: item.category || 'Skills' })),
-    projects: (projects || []).map(item => ({ id: item.id, title: item.title, type: item.type || '', description: item.description || '', tech: item.technologies || [] })),
+    projects: (projects || []).map(item => ({ id: item.id, title: item.title, type: item.type || '', description: item.description || '', tech: item.technologies || [], githubUrl: item.github_url || '', liveUrl: item.live_url || '' })),
     experience: (experience || []).map(item => ({ id: item.id, company: item.company, role: item.role, location: item.location || '', startDate: item.start_date || '', endDate: item.end_date || '', description: item.description || '', technologies: item.technologies || [] })),
     education: (education || []).map(item => ({ id: item.id, institution: item.institution || '', degree: item.degree || '', field: item.field || '', startDate: item.start_date || '', endDate: item.end_date || '', grade: item.grade || '', description: item.description || '' })),
     certifications: (certifications || []).map(item => ({ id: item.id, name: item.name || '', issuer: item.issuer || '', issueDate: item.issue_date || '', credentialUrl: item.credential_url || '', description: item.description || '' })),
