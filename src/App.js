@@ -44,15 +44,19 @@ function Navbar({ active, setActive }) {
 }
 
 function Hero({ portfolio, setActive }) {
+  const displayName = portfolio.profile.name || 'Lingabathina Mohan';
   const role = portfolio.profile.role || 'Software Engineer';
   const tagline = portfolio.profile.tagline || 'Building practical software and AI-powered products.';
   return <section className="home-fresh" id="HOME">
     <div className="home-fresh-grid" />
     <div className="home-fresh-glow home-fresh-glow-one" />
     <div className="home-fresh-glow home-fresh-glow-two" />
+    <div className="home-fresh-orbit home-fresh-orbit-one" />
+    <div className="home-fresh-orbit home-fresh-orbit-two" />
     <div className="home-fresh-content">
-      <div className="home-fresh-copy">
+      <div className="home-fresh-copy home-fresh-3d">
         <div className="home-fresh-eyebrow">{portfolio.settings.heroBadge || 'HELLO, WORLD'}</div>
+        <div className="home-fresh-name">{displayName}<span>.</span></div>
         <div className="home-fresh-line" />
         <div className="home-fresh-role">{role}</div>
         <p className="home-fresh-tagline">{tagline}</p>
@@ -61,7 +65,8 @@ function Hero({ portfolio, setActive }) {
           <button className="home-fresh-button home-fresh-secondary" onClick={() => setActive('CONTACT')}>Let's Connect</button>
         </div>
       </div>
-      <div className="home-fresh-photo-area">
+      <div className="home-fresh-photo-area home-fresh-3d">
+        <div className="home-fresh-photo-ring" />
         <div className="home-fresh-photo">
           {portfolio.profile.avatarUrl ? <img src={portfolio.profile.avatarUrl} alt="Profile" /> : <span>{portfolio.profile.initials || 'ML'}</span>}
         </div>
