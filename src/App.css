@@ -1156,3 +1156,185 @@ html:has(.admin-app), body:has(.admin-app), #root:has(.admin-app){
   .hero-tagline{font-size:12px!important}
   .hero-portrait-wrap{width:210px;height:270px}
 }
+
+/* FRESH HOME PAGE - ISOLATED FROM ALL OLD HERO STYLES */
+.home-fresh{
+  position:relative;
+  min-height:100vh;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  background:#07090f;
+  color:#f4f7ff;
+  isolation:isolate;
+}
+.home-fresh-grid{
+  position:absolute;
+  inset:0;
+  opacity:.45;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:64px 64px;
+  pointer-events:none;
+}
+.home-fresh-glow{
+  position:absolute;
+  width:420px;
+  height:420px;
+  border-radius:50%;
+  filter:blur(110px);
+  pointer-events:none;
+  z-index:-1;
+}
+.home-fresh-glow-one{
+  left:-180px;
+  top:15%;
+  background:rgba(82,230,255,.10);
+}
+.home-fresh-glow-two{
+  right:-180px;
+  bottom:-100px;
+  background:rgba(155,108,255,.10);
+}
+.home-fresh-content{
+  width:min(1180px,calc(100% - 80px));
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 360px;
+  align-items:center;
+  gap:clamp(50px,9vw,130px);
+  position:relative;
+  z-index:2;
+}
+.home-fresh-copy{
+  min-width:0;
+  max-width:620px;
+}
+.home-fresh-eyebrow{
+  display:block;
+  margin-bottom:22px;
+  color:#52e6ff;
+  font:10px/1 var(--font-mono);
+  letter-spacing:3px;
+  text-transform:uppercase;
+  background:none;
+  border:0;
+  box-shadow:none;
+}
+.home-fresh-line{
+  width:42px;
+  height:1px;
+  margin-bottom:24px;
+  background:#52e6ff;
+}
+.home-fresh-role{
+  display:block;
+  margin:0;
+  padding:0;
+  color:#f4f7ff;
+  font:600 clamp(30px,4.2vw,58px)/1.08 Arial,sans-serif;
+  letter-spacing:-.035em;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  text-shadow:none!important;
+}
+.home-fresh-tagline{
+  max-width:540px;
+  margin:22px 0 30px;
+  color:#9da6b8;
+  font:14px/1.8 var(--font-head);
+  background:none;
+}
+.home-fresh-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.home-fresh-button{
+  appearance:none;
+  padding:12px 19px;
+  border-radius:10px;
+  font:10px var(--font-mono);
+  letter-spacing:1px;
+  cursor:pointer;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease;
+}
+.home-fresh-button:hover{transform:translateY(-2px)}
+.home-fresh-primary{
+  color:#061017;
+  background:#52e6ff;
+  border:1px solid #52e6ff;
+}
+.home-fresh-secondary{
+  color:#f4f7ff;
+  background:rgba(255,255,255,.035);
+  border:1px solid rgba(255,255,255,.12);
+}
+.home-fresh-photo-area{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.home-fresh-photo{
+  width:270px;
+  height:350px;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:24px;
+  background:#0d111a;
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+}
+.home-fresh-photo img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+.home-fresh-photo span{
+  color:#52e6ff;
+  font:700 48px var(--font-mono);
+}
+.home-fresh-photo-caption{
+  margin-top:14px;
+  color:#70798d;
+  font:8px var(--font-mono);
+  letter-spacing:2px;
+}
+.home-fresh-scroll{
+  position:absolute;
+  left:50%;
+  bottom:28px;
+  transform:translateX(-50%);
+  color:#70798d;
+  font:8px var(--font-mono);
+  letter-spacing:2.5px;
+  z-index:3;
+}
+@media(max-width:900px){
+  .home-fresh{height:auto;min-height:100vh;padding:115px 0 80px}
+  .home-fresh-content{
+    width:min(100% - 48px,680px);
+    grid-template-columns:1fr;
+    gap:42px;
+    text-align:center;
+  }
+  .home-fresh-copy{margin:0 auto}
+  .home-fresh-line{margin:0 auto 24px}
+  .home-fresh-tagline{margin-left:auto;margin-right:auto}
+  .home-fresh-actions{justify-content:center}
+  .home-fresh-photo{width:220px;height:280px}
+  .home-fresh-scroll{display:none}
+}
+@media(max-width:600px){
+  .home-fresh{padding:100px 0 60px}
+  .home-fresh-content{width:calc(100% - 36px);gap:34px}
+  .home-fresh-role{font-size:30px}
+  .home-fresh-tagline{font-size:12px}
+  .home-fresh-photo{width:190px;height:245px}
+}
