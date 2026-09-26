@@ -45,7 +45,31 @@ function Navbar({ active, setActive }) {
 
 function Hero({ portfolio, setActive }) {
   const displayName = portfolio.profile.name || 'Lingabathina Mohan';
-  return <section className="section hero" id="HOME"><div className="hero-grid" /><div className="orb orb-a" /><div className="orb orb-b" /><div className="hero-copy"><span className="eyebrow">{portfolio.settings.heroBadge}</span><h1 className="hero-name">{displayName}<span>.</span></h1><div className="hero-role">{portfolio.profile.role}</div><p>{portfolio.profile.tagline}</p><div className="hero-actions"><button className="button-3d primary" onClick={() => setActive('PROJECTS')}>Explore Work</button><button className="button-3d secondary" onClick={() => setActive('CONTACT')}>Let's Connect</button></div></div><div className="hero-visual"><div className="hero-portrait-wrap"><div className="hero-portrait-ring" /><div className="hero-portrait">{portfolio.profile.avatarUrl ? <img src={portfolio.profile.avatarUrl} alt={displayName} /> : <span>{portfolio.profile.initials || 'ML'}</span>}</div><span className="hero-portrait-label">MOHAN • AI / SOFTWARE ENGINEER</span></div><TiltCard className="hero-card"><div className="cube-scene"><div className="cube"><span className="front">AI</span><span className="back">ML</span><span className="right">JS</span><span className="left">API</span><span className="top">DEV</span><span className="bottom">SQL</span></div></div><div className="hero-card-meta"><span>BUILDING</span><strong>Ideas → Products</strong></div></TiltCard></div><span className="scroll-label">SCROLL TO EXPLORE ↓</span></section>;
+  return <section className="section hero" id="HOME">
+    <div className="hero-grid" />
+    <div className="orb orb-a" />
+    <div className="orb orb-b" />
+    <div className="hero-copy">
+      <span className="eyebrow">{portfolio.settings.heroBadge}</span>
+      <h1 className="hero-name">{displayName}<span>.</span></h1>
+      <div className="hero-role">{portfolio.profile.role}</div>
+      <p>{portfolio.profile.tagline}</p>
+      <div className="hero-actions">
+        <button className="button-3d primary" onClick={() => setActive('PROJECTS')}>Explore Work</button>
+        <button className="button-3d secondary" onClick={() => setActive('CONTACT')}>Let's Connect</button>
+      </div>
+    </div>
+    <div className="hero-visual">
+      <div className="hero-portrait-wrap">
+        <div className="hero-portrait-ring" />
+        <div className="hero-portrait">
+          {portfolio.profile.avatarUrl ? <img src={portfolio.profile.avatarUrl} alt={displayName} /> : <span>{portfolio.profile.initials || 'ML'}</span>}
+        </div>
+        <span className="hero-portrait-label">MOHAN • AI / SOFTWARE ENGINEER</span>
+      </div>
+    </div>
+    <span className="scroll-label">SCROLL TO EXPLORE ↓</span>
+  </section>;
 }
 
 function About({ portfolio }) {
