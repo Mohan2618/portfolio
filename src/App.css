@@ -1440,3 +1440,86 @@ html:has(.admin-app), body:has(.admin-app), #root:has(.admin-app){
 .project-link-primary{color:#061017;background:var(--cyan);border-color:var(--cyan);font-weight:700}
 .project-link-primary:hover{background:#9af4ff;color:#061017}
 .project-card .tilt-shine{pointer-events:none}
+
+
+/* RESPONSIVE PUBLIC PORTFOLIO - phones, tablets, laptops and large screens */
+html,body,#root{max-width:100%;overflow-x:hidden}
+img{max-width:100%}
+button,a{touch-action:manipulation}
+.main-content{width:100%;max-width:100%;overflow-x:hidden}
+.section{width:100%;box-sizing:border-box}
+.section-heading{max-width:100%}
+.section-heading h2,.about-copy,.experience-description,.project-card p,.resume-card p{overflow-wrap:anywhere}
+.projects-grid,.skills-grid,.experience-grid,.contact-grid,.about-grid{min-width:0}
+.tilt-card{min-width:0}
+.tags{min-width:0}
+.project-card,.experience-card,.contact-card,.skill-card,.profile-card{min-width:0}
+.project-link{white-space:nowrap}
+
+@media (min-width:1400px){
+  .section{padding-left:clamp(60px,7vw,140px);padding-right:clamp(60px,7vw,140px)}
+  .navbar{padding-left:clamp(28px,5vw,90px);padding-right:clamp(28px,5vw,90px)}
+}
+
+@media (max-width:1100px){
+  .navbar nav{gap:10px}
+  .nav-link{font-size:9px}
+  .about-grid{grid-template-columns:280px minmax(0,1fr);gap:28px}
+  .projects-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media (max-width:900px){
+  .navbar{height:auto;min-height:72px;padding:14px 20px;align-items:flex-start}
+  .navbar nav{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:7px;max-width:calc(100% - 58px)}
+  .nav-link{font-size:8px;padding:7px 6px}
+  .section{padding:90px 28px 70px}
+  .section-heading h2{font-size:clamp(32px,7vw,52px)}
+  .about-grid{grid-template-columns:1fr;gap:28px}
+  .profile-card{max-width:420px;margin:0 auto;width:100%;box-sizing:border-box}
+  .skills-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .projects-grid,.experience-grid,.contact-grid{grid-template-columns:1fr}
+  .project-card{min-height:0;padding:25px}
+  .experience-card{padding:22px}
+  .resume-card{padding:32px 25px}
+  .contact-grid{gap:14px}
+}
+
+@media (max-width:600px){
+  .navbar{padding:12px 14px;min-height:66px}
+  .brand-3d{flex:0 0 42px}
+  .navbar nav{gap:5px;max-width:calc(100% - 48px)}
+  .nav-link{font-size:7px;padding:6px 4px;letter-spacing:.5px}
+  .admin-nav-link{display:none}
+  .section{padding:78px 18px 58px}
+  .section-heading{margin-bottom:28px}
+  .section-heading h2{font-size:clamp(28px,9vw,40px);line-height:1.05}
+  .eyebrow{font-size:8px;letter-spacing:2px}
+  .skills-grid{grid-template-columns:1fr}
+  .skill-card{padding:20px}
+  .project-card,.experience-card,.contact-card{padding:20px}
+  .project-card h3{font-size:25px;line-height:1.12}
+  .project-card p,.experience-description{font-size:11px;line-height:1.7}
+  .project-links{gap:7px}
+  .project-link{font-size:7px;padding:8px 10px}
+  .tags span{font-size:7px;padding:6px 7px}
+  .experience-top{flex-direction:column;gap:10px;align-items:flex-start}
+  .experience-date{font-size:8px}
+  .resume-card{padding:28px 20px}
+  .contact-card h3{font-size:24px}
+}
+
+@media (max-width:380px){
+  .navbar nav{max-width:calc(100% - 44px)}
+  .nav-link{font-size:6px;padding:5px 3px}
+  .section{padding-left:14px;padding-right:14px}
+  .home-fresh-content{width:calc(100% - 24px)}
+  .home-fresh-role{font-size:27px}
+  .home-fresh-name{font-size:29px}
+  .home-fresh-photo{width:170px;height:220px}
+  .home-fresh-button{padding:10px 14px;font-size:8px}
+}
+
+@media (min-width:1800px){
+  .home-fresh-content{width:min(1400px,calc(100% - 120px))}
+  .home-fresh-name{font-size:clamp(50px,4vw,72px)}
+}
